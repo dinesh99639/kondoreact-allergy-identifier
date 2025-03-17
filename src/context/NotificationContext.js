@@ -1,27 +1,47 @@
 import { createContext, useState } from 'react';
+import { Fade } from '@progress/kendo-react-animation';
+import {
+  Notification,
+  NotificationGroup,
+} from '@progress/kendo-react-notification';
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-  const [successMessage, setSuccessMessage] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [failureMessage, setFailureMessage] = useState('');
-  const [failure, setFailure] = useState(false);
+  const [notification, setNotification] = useState({
+    isOpen: false,
+    type: '',
+    message: '',
+    timeOut: 6000,
+  });
+
+  const showNotification = (obj) => {
+    setNotification({ ...obj, isOpen: true });
+    setTimeout(() => {
+      setNotification({ isOpen: false, type: '', message: '', timeOut: 6000 });
+    }, obj.timeOut || 6000);
+  };
 
   return (
     <NotificationContext.Provider
       value={{
-        success,
-        setSuccess,
-        successMessage,
-        setSuccessMessage,
-        failure,
-        setFailure,
-        failureMessage,
-        setFailureMessage,
+        showNotification,
       }}
     >
       {children}
+      <NotificationGroup style={{ right: 10, bottom: 10 }}>
+        <Fade>
+          {notification.isOpen && (
+            <Notification
+              type={{ style: notification.type, icon: true }}
+              closable={true}
+              onClose={() => setFailure(false)}
+            >
+              <span>{notification.message}</span>
+            </Notification>
+          )}
+        </Fade>
+      </NotificationGroup>
     </NotificationContext.Provider>
   );
 };

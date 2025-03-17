@@ -24,7 +24,7 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  const { setSuccess, setF } = useContext(NotificationContext);
+  const { showNotification } = useContext(NotificationContext);
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -41,10 +41,16 @@ const Register = () => {
       );
 
       if (userDetails.success) {
+        showNotification({
+          type: 'success',
+          message: 'Registration Successful',
+        });
         navigate('/login');
       } else {
-        setRegistrationFailureNotifcation(true);
-        setRegistrationFailureMessage(userDetails.error);
+        showNotification({
+          type: 'error',
+          message: userDetails.error,
+        });
         setIsRegistering(false);
         return;
       }

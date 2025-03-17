@@ -1,14 +1,17 @@
 import { TextBox } from '@progress/kendo-react-inputs';
 import { Button } from '@progress/kendo-react-buttons';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card } from '@progress/kendo-react-layout';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { MdEmail } from 'react-icons/md';
 import { MdOutlinePassword } from 'react-icons/md';
 import { BiSolidHide } from 'react-icons/bi';
 import { BiSolidShow } from 'react-icons/bi';
 import { CgSpinner } from 'react-icons/cg';
 import { Error } from '@progress/kendo-react-labels';
+import { getUserDetails, login } from '../../services/auth';
+import NotificationContext from '../../context/NotificationContext';
+import UserContext from '../../context/UserContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,9 +20,25 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loggingIn, setIsLoggingIn] = useState(false);
+  const { showNotification } = useContext(NotificationContext);
+  const { setUserDetails } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setIsLoggingIn(true);
+    const data = await login(email, password);
+    if (data.success) {
+      const userDetails = await getUserDetails(data.access_token);
+      if (userDetails.success) {
+        setUserDetails(userDetails.data);
+      }
+      document.cookie = `access_token=${data.access_token}`;
+      setIsLoggingIn(false);
+      navigate('/');
+    } else {
+      showNotification({ type: 'error', message: data.error });
+      setIsLoggingIn(false);
+    }
   };
   return (
     <div
