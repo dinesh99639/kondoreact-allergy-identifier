@@ -27,5 +27,15 @@
     height: 150px;
     margin-bottom: 10px;
     padding: 5px;
+}
+
+#chips {
     overflow-y: scroll;
+    overflow-x: auto;
+}
+
+@media screen and (max-width : 500px){
+    .k-autocomplete, .chip-container {
+        width: 250px !important;
+    }
 }
