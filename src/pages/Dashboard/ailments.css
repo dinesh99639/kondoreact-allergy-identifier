@@ -1,0 +1,31 @@
+.k-chip {
+    margin: 5px;
+}
+
+.k-chip-solid-error .k-icon {
+    transform: rotate(45deg);
+}
+
+.k-icon {
+    transition: 1s;
+}
+
+.ailment-container {
+    width: fit-content;
+    padding: 20px;
+    margin: auto;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.chip-container {
+    width: 400px;
+    height: 150px;
+    margin-bottom: 10px;
+    padding: 5px;
+    overflow-y: scroll;
+}

@@ -9,10 +9,8 @@ const Home = () => {
   const navigate = useNavigate();
 
   const fetchUserDetails = async (access_token) => {
-    console.log(access_token);
     const userDetails = await getUserDetails(access_token);
     if (userDetails.success) {
-      console.log(userDetails.data);
       setUserDetails(userDetails.data);
     }
   };
