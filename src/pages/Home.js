@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import UserContext from '../context/UserContext';
-import { useNavigate } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import Header from '../components/Header';
 import { getUserDetails } from '../services/auth';
 
@@ -26,7 +26,16 @@ const Home = () => {
     }
   }, []);
 
-  return <div> {userDetails && <Header />}</div>;
+  return (
+    <>
+      {userDetails && (
+        <>
+          <Header />
+          <Outlet />
+        </>
+      )}
+    </>
+  );
 };
 
 export default Home;
