@@ -35,7 +35,7 @@ export const NotificationProvider = ({ children }) => {
             <Notification
               type={{ style: notification.type, icon: true }}
               closable={true}
-              onClose={() => setFailure(false)}
+              onClose={prev => {setNotification({...prev, isOpen: false})}}
             >
               <span>{notification.message}</span>
             </Notification>
