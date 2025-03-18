@@ -4,7 +4,7 @@ import Login from './pages/Auth/Login';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import Register from './pages/Auth/Register';
 import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard/Dashboard';
 import ExpiryProducts from './pages/ExpiryProducts';
 import Groups from './pages/Groups';
 

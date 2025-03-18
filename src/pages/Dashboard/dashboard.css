@@ -1,0 +1,13 @@
+.k-tabstrip-content,
+.k-tabstrip-items-wrapper,
+.k-tabstrip-item {
+    border: none !important;
+}
+
+.tab-container .k-animation-container {
+    width: 100%;
+}
+
+.tab-container {
+    margin:20px
+}
