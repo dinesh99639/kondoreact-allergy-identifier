@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+
 import Login from './pages/Auth/Login';
-import { BrowserRouter, Routes, Route } from 'react-router';
 import Register from './pages/Auth/Register';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
@@ -13,14 +13,17 @@ function App() {
     <div style={{ height: '100vh' }}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Dashboard />} />
-            <Route path="products-expiry" element={<ExpiryProducts />} />
-            <Route path="groups" element={<Groups />} />
-          </Route>
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          <Route path="/" element={<Home />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="products-expiry" element={<ExpiryProducts />} />
+            <Route path="groups" element={<Groups />} />
+
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>

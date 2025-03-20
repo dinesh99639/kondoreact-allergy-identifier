@@ -1,0 +1,97 @@
+.floatingActionItemButton {
+  background-color: transparent !important;
+  border: none !important;
+  margin-right: -13px;
+}
+
+.floatingActionItemButton .floatingActionAvatar {
+  cursor: pointer;
+  width: 50px !important;
+  height: 50px !important;
+  flex-basis: auto;
+}
+
+.floatingActionItemButton .floatingActionAvatar .k-avatar-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.dialog .k-dialog {
+  border-radius: 7px;
+  width: 30rem;
+  height: 80vh;
+}
+
+.dialog .k-dialog-content {
+  padding: 0;
+  border-radius: 7px;
+  height: 100% !important;
+  overflow: hidden;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dialog .k-dialog-content:first-child {
+  padding-top: 0 !important;
+}
+
+.dialog .video {
+  width: 100%;
+}
+
+.dialog .actions {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.dialog .actions .action {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.dialog .actions .action:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dialog .actions .action .k-button-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog .actions .action .k-button-text .icon {
+  width: 30px;
+  height: 30px;
+}
+
+@media screen and (max-width: 1024px) {
+  .dialog .k-dialog {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .dialog .k-dialog {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 456px) {
+  .dialog .k-dialog {
+    width: 100%;
+    height: 100%;
+  }
+}

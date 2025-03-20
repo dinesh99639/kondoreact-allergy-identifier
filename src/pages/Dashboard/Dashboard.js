@@ -1,26 +1,47 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { TabStrip, TabStripTab } from '@progress/kendo-react-layout';
 
 import Ailments from './Ailments';
-import './dashboard.css'
+import ScannerDialog from '../../components/ScannerDialog/ScannerDialog';
+import ScanIngredients from './ScanIngredients/ScanIngredients';
+
+import './dashboard.css';
 
 const Dashboard = () => {
-    const [selected, setSelected] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  const [selected, setSelected] = useState(0);
 
-    const handleSelect = (e) => {
-        setSelected(e.selected);
+  const handleSelect = (e) => {
+    setSelected(e.selected);
+    setSearchParams();
+  };
+
+  useEffect(() => {
+    if (searchParams.get('tab') === 'scan-ingredients') {
+      setSelected(1);
     }
-    return (<>
-        <TabStrip selected={selected} onSelect={handleSelect} className='tab-container'>
-            <TabStripTab title="Ailments">
-                <Ailments />
-            </TabStripTab>
-            <TabStripTab title="Scan Ingridients">
-                Add Ingridients component over here
-            </TabStripTab>
-        </TabStrip>
-    </>)
+  }, [searchParams]);
+
+  return (
+    <>
+      <TabStrip
+        selected={selected}
+        onSelect={handleSelect}
+        className="dashboard"
+      >
+        <TabStripTab title="Ailments">
+          <Ailments />
+        </TabStripTab>
+        <TabStripTab title="Scan Ingredients">
+          <ScanIngredients />
+        </TabStripTab>
+      </TabStrip>
+
+      <ScannerDialog />
+    </>
+  );
 };
 
 export default Dashboard;

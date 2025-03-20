@@ -1,0 +1,38 @@
+.scanIngredients .content {
+  width: 100%;
+  padding: 0 5rem;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 40% 57%;
+  gap: 3%;
+  flex-wrap: wrap;
+}
+
+.scanIngredients .content .image {
+  position: relative;
+}
+
+.scanIngredients .content .image img {
+  width: 100%;
+}
+
+.scanIngredients .content .details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: auto;
+}
+
+.scanIngredients .content .details .helpText {
+  text-align: center;
+}
+
+.scanIngredients .content .details .identifyButton {
+  text-align: center;
+}
+
+.scanIngredients .no-content {
+  width: 100%;
+  text-align: center;
+  margin: 30px;
+}
