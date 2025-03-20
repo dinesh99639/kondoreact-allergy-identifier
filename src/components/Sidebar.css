@@ -1,0 +1,9 @@
+.k-drawer-mini {
+    z-index: -1 !important;
+}
+
+k-drawer-push {
+    display: flex;
+    flex-direction: row;
+    z-index: 100 !important;
+}

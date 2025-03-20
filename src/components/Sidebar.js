@@ -1,58 +1,45 @@
 import { Drawer } from '@progress/kendo-react-layout';
 import React, { useState } from 'react';
-import {
-  inboxIcon,
-  calendarIcon,
-  heartIcon,
-  linkIcon,
-  bellIcon,
-  menuIcon,
-  groupBoxIcon,
-  gri,
-} from '@progress/kendo-svg-icons';
+import { groupIcon, clockIcon, userIcon } from '@progress/kendo-svg-icons';
+import { useNavigate } from 'react-router';
 
 const items = [
   {
     text: 'Dashboard',
-    svgIcon: inboxIcon,
+    svgIcon: groupIcon,
     selected: true,
-    route: '',
+    route: '/',
   },
   {
-    separator: true,
+    text: 'Products Expiry',
+    svgIcon: clockIcon,
+    route: '/products-expiry',
   },
   {
-    text: 'Notifications',
-    svgIcon: bellIcon,
-    route: '/notifications',
-  },
-  {
-    text: 'Calendar',
-    svgIcon: calendarIcon,
-    route: '/calendar',
-  },
-  {
-    separator: true,
-  },
-  {
-    text: 'Attachments',
-    svgIcon: linkIcon,
-    route: '/attachments',
-  },
-  {
-    text: 'Favourites',
-    svgIcon: heartIcon,
-    route: '/favourites',
+    text: 'Groups',
+    route: '/groups',
+    svgIcon: userIcon,
   },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ expanded }) => {
   const [selected, setSelected] = useState(
     items.findIndex((x) => x.selected === true)
   );
+  const navigate = useNavigate();
+  const onSelect = (e) => {
+    navigate(e.itemTarget.props.route);
+    setSelected(e.itemIndex);
+  };
   return (
     <Drawer
-      expanded={true}
+      style={{
+        zIndex: 1,
+        position: 'absolute',
+        height: 'calc(100dvh - 48px)',
+        overflow: 'hidden',
+      }}
+      expanded={expanded}
       position={'start'}
       mode={'push'}
       mini={true}
@@ -60,6 +47,7 @@ const Sidebar = () => {
         ...item,
         selected: index === selected,
       }))}
+      onSelect={onSelect}
     ></Drawer>
   );
 };
