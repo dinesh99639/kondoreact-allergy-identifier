@@ -1,16 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AutoComplete } from '@progress/kendo-react-dropdowns';
-import {
-    Card,
-} from '@progress/kendo-react-layout';
+import { Card } from '@progress/kendo-react-layout';
 import { Chip, Button } from '@progress/kendo-react-buttons';
-
 import { updateUserData } from '../../services/userdata';
-import { getCookie } from '../../utils/utils';
-
 import NotificationContext from '../../context/NotificationContext';
 import UserContext from '../../context/UserContext';
-
 import './ailments.css'
 
 const Ailments = () => {

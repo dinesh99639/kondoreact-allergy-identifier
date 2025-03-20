@@ -1,3 +1,4 @@
+import {getCookie} from '../utils/utils'
 export const updateUserData = async (version, ailments, groups, scanned) => {
   try {
         const access_token = getCookie('access_token');
