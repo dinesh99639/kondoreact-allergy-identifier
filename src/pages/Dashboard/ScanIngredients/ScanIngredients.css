@@ -31,6 +31,15 @@
   text-align: center;
 }
 
+.scanIngredients .content .scannedUsers .panelContent {
+  display: flex;
+  gap: 15px;
+}
+
+.scanIngredients .content .scannedUsers .safe .k-expander-title {
+  color: green;
+}
+
 .scanIngredients .no-content {
   width: 100%;
   text-align: center;
