@@ -100,13 +100,12 @@ const Ailments = () => {
     }, [ailments]);
 
     const updateUserAilments = async (newAilments) => {
-        const access_token = getCookie('access_token');
         const version = userDetails?.version;
         const groups = userDetails?.custom?.fields?.groups;
         const scanned = userDetails?.custom.fields.scanned;
         const tempdata = [];
         if (version && groups && scanned) {
-            const data = await updateUserData(access_token, version, newAilments, groups, scanned);
+            const data = await updateUserData(version, newAilments, groups, scanned);
             if (data.success) {
                 data.custom.fields.ailments.forEach(el => {
                     tempdata.push({ class: 'base', name: el.toLocaleLowerCase() });

@@ -1,3 +1,5 @@
+import { deleteCookie, getCookie } from '../utils/utils';
+
 export const getToken = async () => {
   try {
     const res = await fetch(
@@ -51,7 +53,7 @@ export const registerNewUser = async (
             fields: {
               ailments: [],
               groups: [],
-              scanned: [],
+              scanned: []
             },
           },
         }),
@@ -110,6 +112,37 @@ export const getUserDetails = async (access_token) => {
       return { success: false, error: data.message };
     }
     return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+};
+
+export const handleLogout = async () => {
+  try {
+    const res = await fetch(
+      `${process.env.REACT_APP_AUTH_URL}/oauth/token/revoke`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${btoa(
+            process.env.REACT_APP_CLIENT_ID +
+              ':' +
+              process.env.REACT_APP_CLIENT_SECRET
+          )}`,
+        },
+        body: new URLSearchParams({
+          token: getCookie('access_token'),
+          hint: 'access_token',
+        }),
+      }
+    );
+
+    if (res.status === 200) {
+      deleteCookie('access_token');
+      return { success: true };
+    }
+    return { success: false };
   } catch (err) {
     return { success: false, error: err.message };
   }

@@ -1,5 +1,7 @@
-export const updateUserData = async (access_token, version, ailments, groups, scanned) => {
-    try {
+export const updateUserData = async (version, ailments, groups, scanned) => {
+  try {
+        const access_token = getCookie('access_token');
+      
         const updatedBody = {
 
             "version": version,

@@ -29,7 +29,9 @@ const Home = () => {
       {userDetails && (
         <>
           <Header />
-          <Outlet />
+          <div style={{ marginLeft: '30px' }}>
+            <Outlet />
+          </div>
         </>
       )}
     </>
