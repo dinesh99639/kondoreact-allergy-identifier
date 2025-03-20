@@ -53,7 +53,7 @@ export const registerNewUser = async (
             fields: {
               ailments: [],
               groups: [],
-              scanned: []
+              scanned: [],
             },
           },
         }),
@@ -99,8 +99,16 @@ export const login = async (email, password) => {
 
 export const getUserDetails = async (access_token) => {
   try {
+    const expands = [
+      'custom.fields.groups[*].custom.fields.accepted[*]',
+      'custom.fields.groups[*].custom.fields.pending[*]',
+      'custom.fields.groups[*].custom.fields.rejected[*]',
+    ];
+
     const res = await fetch(
-      `${process.env.REACT_APP_HOST}/${process.env.REACT_APP_PROJECT_KEY}/me`,
+      `${process.env.REACT_APP_HOST}/${
+        process.env.REACT_APP_PROJECT_KEY
+      }/me?${expands.map((expand) => `expand=${expand}`).join('&')}`,
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
