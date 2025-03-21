@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 
 import UserContext from '../../../context/UserContext';
 import { extractData } from '../../../utils/generateiveAI';
+import { parseUserData } from '../../../utils/utils';
 
 import { Button, Chip } from '@progress/kendo-react-buttons';
 import { Loader } from '@progress/kendo-react-indicators';
@@ -12,6 +13,7 @@ import {
 } from '@progress/kendo-react-layout';
 import { Reveal } from '@progress/kendo-react-animation';
 import { Typography } from '@progress/kendo-react-common';
+import { DropDownList } from '@progress/kendo-react-dropdowns';
 
 import './ScanIngredients.css';
 
@@ -21,6 +23,10 @@ const ScanIngredients = () => {
   const userContext = useContext(UserContext);
 
   const [names, setNames] = useState({});
+
+  const [groups, setGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState();
+
   const [expansionPanels, setExpansionPanels] = useState({});
   const [identification, setIdentification] = useState({
     isLoading: false,
@@ -34,67 +40,77 @@ const ScanIngredients = () => {
     }));
   };
 
+  const handleSelectedGroupChange = ({ value: group }) => {
+    setSelectedGroup(group);
+
+    const names = {};
+    group?.accepted?.forEach((user) => {
+      names[user?.id] = `${user?.firstName} ${user?.lastName}`;
+    });
+
+    setNames(names);
+  };
+
   const identify = async () => {
     const scanned = location.state;
 
     setIdentification((prev) => ({ ...prev, isLoading: true }));
 
-    // return;
+    const payload = {};
+    selectedGroup?.accepted?.forEach((user) => {
+      payload[user?.id] = user?.ailments || [];
+    });
 
-    const data = await extractData(
+    const res = await extractData(
       scanned.image.split('base64,')[1],
       scanned.type,
-      {
-        [userContext?.userDetails?.id]:
-          userContext?.userDetails?.custom.fields.ailments,
-      }
+      payload
     );
 
-    // const data = {
-    //   "cc002bb0-0e7f-4499-9600-e335d64b50bf": {
-    //     consumable: true,
-    //     ailments: {
-    //       asthma: false,
-    //       test: true,
-    //       testsdf: false,
-    //       taaesdfst: true,
-    //       texzcsdfst: false,
-    //       texzcbst: false,
-    //       tesvcvt: true,
-    //       tecxvxcvst: true,
-    //       txcvxcest: true,
-    //     },
-    //     reason:
-    //       'No ingredients are known asthma triggers. However, those with allergies should exercise caution due to potential cross-contamination.',
-    //   },
-    // };
-
-    setNames({
-      [userContext.userDetails
-        .id]: `${userContext.userDetails.firstName} ${userContext.userDetails.lastName}`,
-    });
-    setIdentification((prev) => ({ ...prev, isLoading: false, data }));
+    setIdentification((prev) => ({ ...prev, isLoading: false, data: res }));
 
     const expansionPanels = {};
-    const keys = Object.keys(data)
+    const keys = Object.keys(res);
     let defaultExpansionValue = false;
 
     if (keys.length === 1) {
       defaultExpansionValue = true;
     }
 
-    Object.keys(data).forEach((key) => {
-      expansionPanels[key] = defaultExpansionValue
-    })
-    
-    setExpansionPanels(expansionPanels);
+    Object.keys(res).forEach((key) => {
+      expansionPanels[key] = defaultExpansionValue;
+    });
 
-    console.log('data', data, userContext);
+    setExpansionPanels(expansionPanels);
   };
 
-  // useEffect(() => {
-  //   const groups = userContext?.userDetails
-  // }, [])
+  useEffect(() => {
+    const userDetails = parseUserData(userContext?.userDetails);
+
+    const self = {
+      id: 'self',
+      name: 'Self',
+      accepted: [
+        {
+          id: userDetails?.id,
+          version: userDetails?.version,
+
+          email: userDetails?.email,
+          firstName: userDetails?.firstName,
+          lastName: userDetails?.lastName,
+
+          ailments: userDetails?.ailments,
+        },
+      ],
+    };
+
+    const groups = [self, ...userDetails?.groups] || [self];
+
+    setGroups(groups);
+    setSelectedGroup(self);
+
+    console.log('parseUserData', userDetails, groups);
+  }, []);
 
   return (
     <div className="scanIngredients">
@@ -108,6 +124,16 @@ const ScanIngredients = () => {
               <div className="helpText">
                 Click the below button to identify potential allergens and
                 diseases that affects your health.
+              </div>
+              <div className="groupsDropdown">
+                <DropDownList
+                  className="dropdown"
+                  dataItemKey="id"
+                  textField="name"
+                  data={groups}
+                  value={selectedGroup}
+                  onChange={handleSelectedGroupChange}
+                />
               </div>
               <div className="identifyButton">
                 <Button
@@ -141,13 +167,11 @@ const ScanIngredients = () => {
                       <>
                         {names[key]}{' '}
                         <Chip
-                          text={details?.consumable ? "Safe" : "Not Safe"}
+                          text={details?.consumable ? 'Safe' : 'Not Safe'}
                           rounded="full"
                           fillMode="outline"
-                          size='small'
-                          themeColor={
-                            details.consumable ? 'success' : 'error'
-                          }
+                          size="small"
+                          themeColor={details.consumable ? 'success' : 'error'}
                         />
                       </>
                     }

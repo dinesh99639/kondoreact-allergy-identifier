@@ -27,6 +27,14 @@
   text-align: center;
 }
 
+.scanIngredients .content .details .groupsDropdown {
+  text-align: center;
+}
+
+.scanIngredients .content .details .groupsDropdown .dropdown {
+  width: 50%;
+}
+
 .scanIngredients .content .details .identifyButton {
   text-align: center;
 }
