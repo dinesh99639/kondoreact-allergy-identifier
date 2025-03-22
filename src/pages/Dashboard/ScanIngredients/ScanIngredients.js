@@ -3,6 +3,8 @@ import { useLocation } from 'react-router';
 
 import UserContext from '../../../context/UserContext';
 import { extractData } from '../../../utils/generateiveAI';
+import { updateUserData } from '../../../services/userdata';
+import { updateGroup } from '../../../services/group';
 import { parseUserData } from '../../../utils/utils';
 
 import { Button, Chip } from '@progress/kendo-react-buttons';
@@ -15,16 +17,16 @@ import { Reveal } from '@progress/kendo-react-animation';
 import { Typography } from '@progress/kendo-react-common';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
 import { TextBox } from '@progress/kendo-react-inputs';
+import { DatePicker } from '@progress/kendo-react-dateinputs';
 
 import './ScanIngredients.css';
-import { DatePicker } from '@progress/kendo-react-dateinputs';
-import { updateGroup } from '../../../services/group';
-import { updateUserData } from '../../../services/userdata';
 
 const ScanIngredients = () => {
   const location = useLocation();
 
   const userContext = useContext(UserContext);
+
+  const [image, setImage] = useState({ data: '', type: '' });
 
   const [productName, setProductName] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
@@ -114,8 +116,6 @@ const ScanIngredients = () => {
   };
 
   const identify = async () => {
-    const scanned = location.state;
-
     setIdentification((prev) => ({ ...prev, isLoading: true }));
 
     const payload = {};
@@ -124,8 +124,8 @@ const ScanIngredients = () => {
     });
 
     const res = await extractData(
-      scanned.image.split('base64,')[1],
-      scanned.type,
+      image?.data?.split('base64,')[1],
+      image?.type,
       payload
     );
 
@@ -145,6 +145,11 @@ const ScanIngredients = () => {
 
     setExpansionPanels(expansionPanels);
   };
+
+  useEffect(() => {
+    setImage({ data: location?.state?.image, type: location?.state?.type });
+    window.history.replaceState({}, '');
+  }, [location?.state]);
 
   useEffect(() => {
     const userDetails = parseUserData(userContext?.userDetails);
@@ -179,11 +184,11 @@ const ScanIngredients = () => {
 
   return (
     <div className="scanIngredients">
-      {location.state?.image ? (
+      {image?.data ? (
         <div className="content">
           <div className="left">
             <div className="image">
-              <img src={location.state.image} />
+              <img src={image?.data} />
             </div>
             {identification.data && (
               <div className="product">

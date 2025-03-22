@@ -19,9 +19,12 @@ const generateStringFromObject = (obj) => {
 };
 
 export const extractData = async (imageAsBase64, mime, ailmentsList) => {
-  const ailments = generateStringFromObject(ailmentsList);
-  const prompt = `Based on the provided image, evaluate whether this product is safe for the user or users, ${ailments}. Respond with a JSON object as mentioned
-JSON Format:
+  // const ailments = generateStringFromObject(ailmentsList);
+
+  const prompt = `
+Based on the provided image, evaluate whether this product is safe for the user or users. Respond with a JSON object as mentioned
+Input JSON: ${JSON.stringify(ailmentsList)}
+Output JSON Format:
 {
   <id>: {
     "consumable": <true or false>,
@@ -29,11 +32,12 @@ JSON Format:
     "reason" : <a brief explanation (under 50 words) as to why the product is not consumable>
   }
 }
+
 Instructions:
 - Don't add extra words like ticks, quotes, or json in the response.
 - Please send only json respose and follow strict JSON format.
 - In the given JSON format, one user is added as an example. The relationship can be many ids to one entity.
-- Provide reason for every result. The reason should not contain already known data.
+- Provide reason for every result in easy to understand sentance. The reason should not contain already known data.
 `;
 
   const image = {
@@ -49,5 +53,6 @@ Instructions:
     .replace(/```json\n|\n```/g, '')
     .replace(/\\n/g, '')
     .replace(/\\"/g, '"');
+
   return JSON.parse(cleanedResponse);
 };
