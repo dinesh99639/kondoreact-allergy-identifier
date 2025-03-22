@@ -116,6 +116,12 @@ const Login = () => {
                 setPasswordError('');
               }
               setPassword(e.target.value);
+
+            }}
+            onKeyUp={(e) => {
+              if (e.key === "Enter" && !!email) {
+                handleLogin();
+              }
             }}
             type={showPassword ? 'text' : 'password'}
             style={{ paddingLeft: 15 }}
