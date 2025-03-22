@@ -80,3 +80,22 @@
   text-align: center;
   margin: 30px;
 }
+
+@media screen and (max-width: 456px) {
+  .scanIngredients .content {
+    grid-template-columns: none;
+    padding: 1rem 0.2rem;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .scanIngredients .no-content {
+    margin: 10px 0px;
+  }
+
+  .scanIngredients .content .left .image .placeholder {
+    height: 200px;
+  }
+}
