@@ -16,6 +16,13 @@
   width: 100%;
 }
 
+.scanIngredients .content .left .image .placeholder {
+  height: 400px;
+  border: 1px dashed lightgray;
+  border-width: 3px;
+  border-radius: 7px;
+}
+
 .scanIngredients .content .left .product {
   display: flex;
   flex-direction: column;

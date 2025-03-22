@@ -184,162 +184,172 @@ const ScanIngredients = () => {
 
   return (
     <div className="scanIngredients">
-      {image?.data ? (
-        <div className="content">
-          <div className="left">
-            <div className="image">
-              <img src={image?.data} />
-            </div>
-            {identification.data && (
-              <div className="product">
-                <div className="productDetails">
-                  <TextBox
-                    fillMode="Outline"
-                    placeholder="Product name"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                  />
-                  <DatePicker
-                    fillMode="outline"
-                    placeholder="Expiry date"
-                    format="yyyy-MM-dd"
-                    value={expiryDate}
-                    onChange={(e) => setExpiryDate(e.target.value)}
-                  />
-                </div>
-                <div className="saveButton">
-                  <Button
-                    themeColor="primary"
-                    style={{ width: '90px' }}
-                    onClick={saveProduct}
-                  >
-                    {isSaveInProgress && (
-                      <Loader size="small" type="pulsing" themeColor="light" />
-                    )}{' '}
-                    Save
-                  </Button>
-                </div>
-              </div>
-            )}
+      <div className="content">
+        <div className="left">
+          <div className="image">
+            {image.data ? 
+            <img src={image?.data} /> :
+            <div className='placeholder'></div>
+            }
           </div>
-          {!identification.data ? (
-            <div className="details">
-              <div className="helpText">
-                Click the below button to identify potential allergens and
-                diseases that affects your health.
-              </div>
-              <div className="groupsDropdown">
-                <DropDownList
-                  className="dropdown"
-                  dataItemKey="id"
-                  textField="name"
-                  data={groups}
-                  value={selectedGroup}
-                  onChange={handleSelectedGroupChange}
+          {identification.data && (
+            <div className="product">
+              <div className="productDetails">
+                <TextBox
+                  fillMode="Outline"
+                  placeholder="Product name"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                />
+                <DatePicker
+                  fillMode="outline"
+                  placeholder="Expiry date"
+                  format="yyyy-MM-dd"
+                  value={expiryDate}
+                  onChange={(e) => setExpiryDate(e.target.value)}
                 />
               </div>
-              <div className="identifyButton">
+              <div className="saveButton">
                 <Button
                   themeColor="primary"
                   style={{ width: '90px' }}
-                  onClick={identify}
+                  onClick={saveProduct}
                 >
-                  {identification.isLoading && (
+                  {isSaveInProgress && (
                     <Loader size="small" type="pulsing" themeColor="light" />
                   )}{' '}
-                  Identify
+                  Save
                 </Button>
               </div>
             </div>
-          ) : (
-            <div className="scannedUsers">
-              {Object.keys(identification.data || {}).map((key, index) => {
-                const details = identification.data[key];
-
-                let affectedCount = 0;
-                Object.keys(details?.ailments).forEach((key) => {
-                  if (details.ailments[key]) {
-                    affectedCount++;
-                  }
-                });
-
-                return (
-                  <ExpansionPanel
-                    key={index}
-                    title={
-                      <>
-                        {names[key]}{' '}
-                        <Chip
-                          text={details?.consumable ? 'Safe' : 'Not Safe'}
-                          rounded="full"
-                          fillMode="outline"
-                          size="small"
-                          themeColor={details.consumable ? 'success' : 'error'}
-                        />
-                      </>
-                    }
-                    subtitle={affectedCount}
-                    expanded={expansionPanels[key]}
-                    tabIndex={0}
-                    onAction={() => handleExpansion(key)}
-                    className={details?.consumable ? 'safe' : 'notSafe'}
-                  >
-                    <Reveal
-                      transitionEnterDuration={150}
-                      transitionExitDuration={150}
-                    >
-                      {expansionPanels[key] && (
-                        <ExpansionPanelContent>
-                          <div
-                            className="panelContent"
-                            style={{ display: 'flex', flexDirection: 'column' }}
-                          >
-                            <div>
-                              <Typography.h6>
-                                Allergens and Diseases
-                              </Typography.h6>
-                              <div>
-                                {Object.keys(details.ailments).map(
-                                  (key, index) => (
-                                    <Chip
-                                      key={index}
-                                      text={key}
-                                      value={key}
-                                      rounded="full"
-                                      fillMode="outline"
-                                      themeColor={
-                                        !details.ailments[key]
-                                          ? 'success'
-                                          : 'error'
-                                      }
-                                    />
-                                  )
-                                )}
-                              </div>
-                            </div>
-                            <div>
-                              <Typography.h6>Reason</Typography.h6>
-                              <div>{details?.reason}</div>
-                            </div>
-                          </div>
-                        </ExpansionPanelContent>
-                      )}
-                    </Reveal>
-                  </ExpansionPanel>
-                );
-              })}
-            </div>
           )}
         </div>
-      ) : (
-        <div
-          className="no-content"
-          style={{ width: '100%', textAlign: 'center' }}
-        >
-          Please capture an image or upload image by clicking on button at
-          bottom right corner of the screen to initiate scanning
-        </div>
-      )}
+        {image.type ? (
+          <>
+            {!identification.data ? (
+              <div className="details">
+                <div className="helpText">
+                  Click the below button to identify potential allergens and
+                  diseases that affects your health.
+                </div>
+                <div className="groupsDropdown">
+                  <DropDownList
+                    className="dropdown"
+                    dataItemKey="id"
+                    textField="name"
+                    data={groups}
+                    value={selectedGroup}
+                    onChange={handleSelectedGroupChange}
+                  />
+                </div>
+                <div className="identifyButton">
+                  <Button
+                    themeColor="primary"
+                    style={{ width: '90px' }}
+                    onClick={identify}
+                  >
+                    {identification.isLoading && (
+                      <Loader size="small" type="pulsing" themeColor="light" />
+                    )}{' '}
+                    Identify
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="scannedUsers">
+                {Object.keys(identification.data || {}).map((key, index) => {
+                  const details = identification.data[key];
+
+                  let affectedCount = 0;
+                  Object.keys(details?.ailments).forEach((key) => {
+                    if (details.ailments[key]) {
+                      affectedCount++;
+                    }
+                  });
+
+                  return (
+                    <ExpansionPanel
+                      key={index}
+                      title={
+                        <>
+                          {names[key]}{' '}
+                          <Chip
+                            text={details?.consumable ? 'Safe' : 'Not Safe'}
+                            rounded="full"
+                            fillMode="outline"
+                            size="small"
+                            themeColor={
+                              details.consumable ? 'success' : 'error'
+                            }
+                          />
+                        </>
+                      }
+                      subtitle={affectedCount}
+                      expanded={expansionPanels[key]}
+                      tabIndex={0}
+                      onAction={() => handleExpansion(key)}
+                      className={details?.consumable ? 'safe' : 'notSafe'}
+                    >
+                      <Reveal
+                        transitionEnterDuration={150}
+                        transitionExitDuration={150}
+                      >
+                        {expansionPanels[key] && (
+                          <ExpansionPanelContent>
+                            <div
+                              className="panelContent"
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                              }}
+                            >
+                              <div>
+                                <Typography.h6>
+                                  Allergens and Diseases
+                                </Typography.h6>
+                                <div>
+                                  {Object.keys(details.ailments).map(
+                                    (key, index) => (
+                                      <Chip
+                                        key={index}
+                                        text={key}
+                                        value={key}
+                                        rounded="full"
+                                        fillMode="outline"
+                                        themeColor={
+                                          !details.ailments[key]
+                                            ? 'success'
+                                            : 'error'
+                                        }
+                                      />
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                              <div>
+                                <Typography.h6>Reason</Typography.h6>
+                                <div>{details?.reason}</div>
+                              </div>
+                            </div>
+                          </ExpansionPanelContent>
+                        )}
+                      </Reveal>
+                    </ExpansionPanel>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        ) : (
+          <div
+            className="no-content"
+            style={{ width: '100%', textAlign: 'center' }}
+          >
+            Please capture an image or upload image by clicking on button at
+            bottom right corner of the screen to initiate scanning
+          </div>
+        )}
+      </div>
     </div>
   );
 };
