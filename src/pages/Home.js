@@ -31,12 +31,11 @@ const Home = () => {
     <>
       {userDetails && (
         <>
-          <Header />
-          <div style={{ marginLeft: '30px' }}>
+          <Header>
             <Outlet />
-          </div>
 
-          <ScannerDialog />
+            <ScannerDialog />
+          </Header>
         </>
       )}
     </>

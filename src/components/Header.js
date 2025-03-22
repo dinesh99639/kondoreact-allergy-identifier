@@ -16,10 +16,11 @@ import { useNavigate } from 'react-router';
 import UserContext from '../context/UserContext';
 import { IoMdNotifications } from 'react-icons/io';
 import { Popup } from '@progress/kendo-react-popup';
+import { Typography } from '@progress/kendo-react-common';
 
-const Header = () => {
+const Header = (props) => {
   const anchor = useRef(null);
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(window.innerWidth > 456);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [expiredProducts, setExpiredProducts] = useState([]);
   const { setUserDetails, userDetails } = useContext(UserContext);
@@ -79,6 +80,7 @@ const Header = () => {
             svgIcon={menuIcon}
             onClick={toggleDrawer}
           ></Button>
+          <Typography.h6 style={{ fontSize: "18px", margin: "auto 10px" }}>Allergy Identifier</Typography.h6>
         </AppBarSection>
         <AppBarSpacer style={{ width: 4 }} />
         <AppBarSpacer />
@@ -179,7 +181,9 @@ const Header = () => {
           </div>
         </AppBarSection>
       </AppBar>
-      <Sidebar expanded={showDrawer} setExpanded={setShowDrawer} />
+      <Sidebar expanded={showDrawer} setExpanded={setShowDrawer}>
+        {props.children}
+      </Sidebar>
     </div>
   );
 };

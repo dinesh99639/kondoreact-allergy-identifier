@@ -1,7 +1,10 @@
-import { Drawer } from '@progress/kendo-react-layout';
 import React, { useEffect, useState } from 'react';
-import { groupIcon, clockIcon, userIcon } from '@progress/kendo-svg-icons';
 import { useLocation, useNavigate } from 'react-router';
+import { Drawer, DrawerContent } from '@progress/kendo-react-layout';
+
+import { groupIcon, clockIcon, userIcon } from '@progress/kendo-svg-icons';
+
+import './Sidebar.css';
 
 const items = [
   {
@@ -22,7 +25,7 @@ const items = [
   },
 ];
 
-const Sidebar = ({ expanded }) => {
+const Sidebar = ({ children, expanded, setExpanded }) => {
   const [selected, setSelected] = useState(
     items.findIndex((x) => x.selected === true)
   );
@@ -39,6 +42,10 @@ const Sidebar = ({ expanded }) => {
     }
   }, []);
 
+  const handleClick = () => {
+    setExpanded((prevState) => !prevState);
+  };
+
   const onSelect = (e) => {
     navigate(e.itemTarget.props.route);
     setSelected(e.itemIndex);
@@ -46,22 +53,19 @@ const Sidebar = ({ expanded }) => {
 
   return (
     <Drawer
-      style={{
-        zIndex: 1,
-        position: 'absolute',
-        height: 'calc(100dvh - 48px)',
-        overflow: 'hidden',
-      }}
       expanded={expanded}
-      position={'start'}
-      mode={'push'}
+      position="start"
+      mode="push"
       mini={true}
       items={items.map((item, index) => ({
         ...item,
         selected: index === selected,
       }))}
       onSelect={onSelect}
-    ></Drawer>
+      onOverlayClick={handleClick}
+    >
+      <DrawerContent>{children}</DrawerContent>
+    </Drawer>
   );
 };
 
