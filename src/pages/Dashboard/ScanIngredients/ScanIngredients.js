@@ -30,7 +30,7 @@ const ScanIngredients = () => {
 
   const [productName, setProductName] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
-  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
+  const [isSaveInProgress, setIsSaveInProgress] = useState(null);
 
   const [names, setNames] = useState({});
 
@@ -187,12 +187,13 @@ const ScanIngredients = () => {
       <div className="content">
         <div className="left">
           <div className="image">
-            {image.data ? 
-            <img src={image?.data} /> :
-            <div className='placeholder'></div>
-            }
+            {image.data ? (
+              <img src={image?.data} />
+            ) : (
+              <div className="placeholder"></div>
+            )}
           </div>
-          {identification.data && (
+          {identification.data && isSaveInProgress !== false ? (
             <div className="product">
               <div className="productDetails">
                 <TextBox
@@ -222,6 +223,8 @@ const ScanIngredients = () => {
                 </Button>
               </div>
             </div>
+          ) : (
+            isSaveInProgress === false && <div className='saveSuccess'>Product saved successfully.</div>
           )}
         </div>
         {image.type ? (

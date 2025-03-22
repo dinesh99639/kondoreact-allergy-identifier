@@ -38,6 +38,11 @@
   text-align: center;
 }
 
+.scanIngredients .content .left .saveSuccess {
+  text-align: center;
+  color: green;
+}
+
 .scanIngredients .content .details {
   display: flex;
   flex-direction: column;
