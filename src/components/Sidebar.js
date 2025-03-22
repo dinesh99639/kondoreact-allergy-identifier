@@ -42,13 +42,13 @@ const Sidebar = ({ children, expanded, setExpanded }) => {
     }
   }, []);
 
-  const handleClick = () => {
-    setExpanded((prevState) => !prevState);
-  };
-
   const onSelect = (e) => {
     navigate(e.itemTarget.props.route);
     setSelected(e.itemIndex);
+
+    if (window.innerWidth <= 456) {
+      setExpanded(false);
+    }
   };
 
   return (
@@ -62,7 +62,6 @@ const Sidebar = ({ children, expanded, setExpanded }) => {
         selected: index === selected,
       }))}
       onSelect={onSelect}
-      onOverlayClick={handleClick}
     >
       <DrawerContent>{children}</DrawerContent>
     </Drawer>
