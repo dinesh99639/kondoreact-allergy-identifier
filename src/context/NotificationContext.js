@@ -29,7 +29,7 @@ export const NotificationProvider = ({ children }) => {
       }}
     >
       {children}
-      <NotificationGroup style={{ right: 10, bottom: 10 }}>
+      <NotificationGroup style={{ right: 10, bottom: 10,zIndex:'100003' }}>
         <Fade>
           {notification.isOpen && (
             <Notification

@@ -3,20 +3,6 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GENAI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
-const generateStringFromObject = (obj) => {
-  let str = '';
-  for (let i in obj) {
-    let ailmentStr = '';
-    if (Array.isArray(obj[i]) && obj[i].length > 0) {
-      ailmentStr = obj[i].join(',');
-    }
-    if (ailmentStr) {
-      str += `${i} has ${ailmentStr};`;
-    }
-  }
-
-  return str;
-};
 
 export const extractData = async (imageAsBase64, mime, ailmentsList) => {
   // const ailments = generateStringFromObject(ailmentsList);

@@ -1,27 +1,42 @@
 import React, { useContext, useEffect, useState } from 'react';
 import UserContext from '../../context/UserContext';
 import { parseUserData } from '../../utils/utils';
-import './Groups.css';
-import Group from './Group';
 
+import Group from './Group';
+import UpdateGroup from './UpdateGroup';
+
+import './Groups.css';
+import { Button } from '@progress/kendo-react-buttons';
 const Groups = () => {
   const { userDetails } = useContext(UserContext);
-  console.log(parseUserData(userDetails));
   const [parsedUserDetails, setParsedUserDetails] = useState({});
-  const [openIndex, setOpenIndex] = useState(null);
+
+  const [visible, setVisible] = useState(false);
+  const [title, setTitle] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  
   useEffect(() => {
-    console.log();
     setParsedUserDetails(parseUserData(userDetails));
   }, []);
 
-  useEffect(() => {
-    console.log(parsedUserDetails);
-  }, [parsedUserDetails]);
-  const handleToggle = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
+const handleAddGroup = ()=>{
+  setSelectedGroup(null);
+  setSelectedId(null);
+  setTitle('Add Group');
+  setVisible(true);
+}
 
-  return (
+const handleUpdateGroup = (id,name)=>{
+  setSelectedGroup(name);
+  setSelectedId(id)
+  setTitle('Update Group');
+  setVisible(true);
+};
+
+return (
+    <>
+    <Button onClick={handleAddGroup} style={{marginLeft:"250px", marginTop:"20px"}}>Add Group</Button>
     <div className="ailment-container">
       <div
         style={{
@@ -35,12 +50,19 @@ const Groups = () => {
         }}
       >
         {parsedUserDetails?.groups &&
-          parsedUserDetails.groups.map((group) => {
-            console.log(group);
-            return <Group group={group} />;
+          parsedUserDetails.groups.map((group,idx) => {
+            return <Group group={group} handleUpdateGroup={handleUpdateGroup} key={idx} />;
           })}
       </div>
     </div>
+    {visible && <UpdateGroup 
+                  visible={visible} 
+                  setVisible={setVisible} 
+                  title={title} 
+                  groups={parsedUserDetails} 
+                  selectedId={selectedId}
+                  selectedGroup={selectedGroup}/>}
+    </>
   );
 };
 

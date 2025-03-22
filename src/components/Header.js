@@ -31,12 +31,10 @@ const Header = (props) => {
   const { showNotification } = useContext(NotificationContext);
   const navigate = useNavigate();
   const groups = parseGroups(userDetails?.custom.fields.groups);
-  console.log('Initial Groups', groups);
 
   useEffect(() => {
     setPendingRequests(
       groups.reduce((acc, group) => {
-        console.log(group);
         const hasRequestInCurrentGroup = group.pending.find(
           (pendingUser) => pendingUser.id === userDetails.id
         );
@@ -50,8 +48,6 @@ const Header = (props) => {
       }, [])
     );
   }, [userDetails]);
-
-  console.log('pendingRequests', pendingRequests);
 
   const toggleDrawer = () => {
     setShowDrawer((prev) => !prev);

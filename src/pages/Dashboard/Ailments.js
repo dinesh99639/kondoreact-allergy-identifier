@@ -59,9 +59,7 @@ const Ailments = () => {
 
         user.version = res?.data?.version;
         user.custom.fields.ailments = newAilments;
-
-        console.log("ailments", user.custom.fields.ailments)
-
+        
         setUserDetails(user);
         showNotification({
           type: 'success',
@@ -178,13 +176,12 @@ const Ailments = () => {
             onClick={handleAddAilment}
             themeColor={'primary'}
             disabled={!inputValue}
-            style={{}}
           >
             Add Ailment
           </Button>
 
           {saveButtonVisibility && (
-            <Button onClick={handleSave} themeColor={'primary'} style={{}}>
+            <Button onClick={handleSave} themeColor={'primary'}>
               Update List
             </Button>
           )}
