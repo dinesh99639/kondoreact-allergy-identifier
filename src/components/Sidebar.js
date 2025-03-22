@@ -1,7 +1,7 @@
 import { Drawer } from '@progress/kendo-react-layout';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { groupIcon, clockIcon, userIcon } from '@progress/kendo-svg-icons';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 const items = [
   {
@@ -27,10 +27,23 @@ const Sidebar = ({ expanded }) => {
     items.findIndex((x) => x.selected === true)
   );
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      setSelected(0);
+    } else if (location.pathname === '/products-expiry') {
+      setSelected(1);
+    } else if (location.pathname === '/groups') {
+      setSelected(2);
+    }
+  }, []);
+
   const onSelect = (e) => {
     navigate(e.itemTarget.props.route);
     setSelected(e.itemIndex);
   };
+
   return (
     <Drawer
       style={{

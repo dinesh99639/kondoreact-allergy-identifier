@@ -5,8 +5,8 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
-import ExpiryProducts from './pages/Dashboard/ExpiryProducts';
-import Groups from './pages/Groups';
+import ExpiryProducts from './pages/ExpiryProducts/ExpiryProducts';
+import Groups from './pages/Groups/Groups';
 
 function App() {
   return (
