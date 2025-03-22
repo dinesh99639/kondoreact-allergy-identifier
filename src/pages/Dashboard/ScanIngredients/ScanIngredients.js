@@ -4,7 +4,7 @@ import { useLocation } from 'react-router';
 import UserContext from '../../../context/UserContext';
 import { extractData } from '../../../utils/generateiveAI';
 import { updateUserData } from '../../../services/userdata';
-import { deleteGroup, updateGroup } from '../../../services/group';
+import { updateGroup } from '../../../services/group';
 import { parseUserData } from '../../../utils/utils';
 
 import { Button, Chip } from '@progress/kendo-react-buttons';
@@ -152,7 +152,6 @@ const ScanIngredients = () => {
   }, [location?.state]);
 
   useEffect(() => {
-    deleteGroup("b72d6dbb-ffc0-412b-b401-085a14b5bac2", 1)
     const userDetails = parseUserData(userContext?.userDetails);
 
     const self = {
