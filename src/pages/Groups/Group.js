@@ -24,17 +24,17 @@ const Group = ({ group }) => {
       >
         <div>{group.name}</div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <MdDeleteForever style={{ color: 'red', cursor: 'pointer' }} />
-          <MdEdit style={{ color: 'red', cursor: 'pointer' }} />
+          <MdDeleteForever style={{ color: '#4D55CC', cursor: 'pointer' }} />
+          <MdEdit style={{ color: '#4D55CC', cursor: 'pointer' }} />
           {!isOpen && (
             <FaChevronDown
-              style={{ color: 'red', cursor: 'pointer' }}
+              style={{ color: '#4D55CC', cursor: 'pointer' }}
               onClick={handleToggleAccordion}
             />
           )}
           {isOpen && (
             <FaChevronUp
-              style={{ color: 'red', cursor: 'pointer' }}
+              style={{ color: '#4D55CC', cursor: 'pointer' }}
               onClick={handleToggleAccordion}
             />
           )}

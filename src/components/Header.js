@@ -11,35 +11,47 @@ import { menuIcon } from '@progress/kendo-svg-icons';
 import { Button } from '@progress/kendo-react-buttons';
 import Sidebar from './Sidebar';
 import { Tooltip } from '@progress/kendo-react-tooltip';
-import { handleLogout } from '../services/auth';
+import { getUserDetails, handleLogout } from '../services/auth';
 import { useNavigate } from 'react-router';
 import UserContext from '../context/UserContext';
 import { IoMdNotifications } from 'react-icons/io';
 import { Popup } from '@progress/kendo-react-popup';
-import { Typography } from '@progress/kendo-react-common';
+import { getCookie, parseGroups } from '../utils/utils';
+import { updateGroup } from '../services/group';
+import NotificationContext from '../context/NotificationContext';
 
 const Header = (props) => {
   const anchor = useRef(null);
-  const [showDrawer, setShowDrawer] = useState(window.innerWidth > 456);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const pendingRequestsCount = useRef(0);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [expiredProducts, setExpiredProducts] = useState([]);
   const { setUserDetails, userDetails } = useContext(UserContext);
+  const { showNotification } = useContext(NotificationContext);
   const navigate = useNavigate();
-  const groups = userDetails?.custom.fields.groups;
-  const pendingRequests = groups.reduce((groups, currentValue) => {
-    if (currentValue.obj.custom.fields.pending.length > 0) {
-      return [
-        ...groups,
-        {
-          pendingGroups: currentValue.obj.custom.fields.pending,
-          groupName: currentValue.obj.custom.fields.groupName,
-        },
-      ];
-    }
-    return groups;
-  }, []);
+  const groups = parseGroups(userDetails?.custom.fields.groups);
+  console.log('Initial Groups', groups);
 
-  console.log(pendingRequests, 'pendingRequests');
+  useEffect(() => {
+    setPendingRequests(
+      groups.reduce((acc, group) => {
+        console.log(group);
+        const hasRequestInCurrentGroup = group.pending.find(
+          (pendingUser) => pendingUser.id === userDetails.id
+        );
+        if (hasRequestInCurrentGroup) {
+          return [
+            ...acc,
+            { request: hasRequestInCurrentGroup, name: group.name },
+          ];
+        }
+        return acc;
+      }, [])
+    );
+  }, [userDetails]);
+
+  console.log('pendingRequests', pendingRequests);
 
   const toggleDrawer = () => {
     setShowDrawer((prev) => !prev);
@@ -66,9 +78,28 @@ const Header = (props) => {
     setShowNotificationPanel((prev) => !prev);
   };
 
-  const handleAcceptInvitation = () => {};
+  const handleAcceptInvitation = async (request, groupName) => {
+    groups.forEach(async (group) => {
+      if (group.name === groupName) {
+        group.pending = group.pending.filter(
+          (pendingUser) => pendingUser.id !== request.id
+        );
+        group.accepted.push(request);
+        const response = await updateGroup(group);
+        if (response.success) {
+          setUserDetails(response.data);
+          showNotification({
+            type: 'success',
+            message: `You have accepted the invitation to join ${groupName}`,
+          });
+        }
+      }
+    });
+  };
 
-  const handleRejectInvitation = () => {};
+  const handleRejectInvitation = () => {
+    updateGroup();
+  };
 
   return (
     <div style={{ overflow: 'hidden' }}>
@@ -80,7 +111,6 @@ const Header = (props) => {
             svgIcon={menuIcon}
             onClick={toggleDrawer}
           ></Button>
-          <Typography.h6 style={{ fontSize: "18px", margin: "auto 10px" }}>Allergy Identifier</Typography.h6>
         </AppBarSection>
         <AppBarSpacer style={{ width: 4 }} />
         <AppBarSpacer />
@@ -106,7 +136,7 @@ const Header = (props) => {
                     fontWeight: 'bold',
                   }}
                 >
-                  {expiredProducts.length}
+                  {expiredProducts.length + pendingRequestsCount.current}
                 </span>
               )}
               <Popup
@@ -117,45 +147,51 @@ const Header = (props) => {
                 <div>
                   {expiredProducts.length > 0 && (
                     <div
-                      style={{ padding: '0.5rem', cursor: 'pointer' }}
+                      style={{
+                        padding: '0.5rem',
+                        cursor: 'pointer',
+                        borderBottom: ' 1px solid lightgray',
+                      }}
                       onClick={() => {
                         navigate('/products-expiry');
                       }}
                     >
-                      <span>
-                        {expiredProducts.length} Items are about to expire
-                      </span>
+                      <span>{expiredProducts.length} items are expired</span>
                     </div>
                   )}
                   {pendingRequests.length > 0 &&
-                    pendingRequests.map((pr) =>
-                      pr.pendingGroups.map((pendingGroup) => {
-                        console.log(pr, 'pr');
-                        return (
-                          <div style={{ padding: '0.5rem' }}>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                              {pendingGroup.obj.firstName}{' '}
-                              {pendingGroup.obj.lastName} has requested to join{' '}
-                              {pr.groupName}
-                              <MdCheck
-                                style={{
-                                  color: 'green',
-                                  fontSize: '1.5rem',
-                                }}
-                                onClick={() => handleAcceptInvitation()}
-                              />
-                              <IoMdClose
-                                style={{
-                                  color: 'red',
-                                  fontSize: '1.5rem',
-                                }}
-                                onClick={() => handleRejectInvitation()}
-                              />
-                            </div>
+                    pendingRequests.map((pr) => (
+                      <div
+                        style={{
+                          padding: '0.5rem',
+                          borderBottom: ' 1px solid lightgray',
+                        }}
+                      >
+                        <div style={{ display: 'flex', gap: '1rem' }}>
+                          <div>
+                            You are requested to join <b>{pr.name}</b>
                           </div>
-                        );
-                      })
-                    )}
+                          <MdCheck
+                            style={{
+                              color: 'green',
+                              fontSize: '1.5rem',
+                              cursor: 'pointer',
+                            }}
+                            onClick={() =>
+                              handleAcceptInvitation(pr.request, pr.name)
+                            }
+                          />
+                          <IoMdClose
+                            style={{
+                              color: 'red',
+                              fontSize: '1.5rem',
+                              cursor: 'pointer',
+                            }}
+                            onClick={() => handleRejectInvitation()}
+                          />
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </Popup>
             </div>
