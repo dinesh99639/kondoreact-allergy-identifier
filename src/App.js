@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import ExpiryProducts from './pages/ExpiryProducts/ExpiryProducts';
 import Groups from './pages/Groups/Groups';
 
+import './App.css';
+
 function App() {
   return (
     <div style={{ height: '100vh' }}>
