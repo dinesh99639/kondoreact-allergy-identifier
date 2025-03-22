@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router';
 import { TabStrip, TabStripTab } from '@progress/kendo-react-layout';
 
 import Ailments from './Ailments';
-import ScannerDialog from '../../components/ScannerDialog/ScannerDialog';
 import ScanIngredients from './ScanIngredients/ScanIngredients';
 
 import './dashboard.css';
@@ -38,8 +37,6 @@ const Dashboard = () => {
           <ScanIngredients />
         </TabStripTab>
       </TabStrip>
-
-      <ScannerDialog />
     </>
   );
 };

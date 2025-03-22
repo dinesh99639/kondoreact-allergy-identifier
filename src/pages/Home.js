@@ -1,8 +1,11 @@
 import React, { useContext, useEffect } from 'react';
-import UserContext from '../context/UserContext';
 import { Outlet, useNavigate } from 'react-router';
-import Header from '../components/Header';
+
+import UserContext from '../context/UserContext';
 import { getUserDetails } from '../services/auth';
+
+import Header from '../components/Header';
+import ScannerDialog from '../components/ScannerDialog/ScannerDialog';
 
 const Home = () => {
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -32,6 +35,8 @@ const Home = () => {
           <div style={{ marginLeft: '30px' }}>
             <Outlet />
           </div>
+
+          <ScannerDialog />
         </>
       )}
     </>
