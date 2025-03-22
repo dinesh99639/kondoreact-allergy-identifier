@@ -105,6 +105,7 @@ const ScannerDialog = () => {
             onClick: () => fileRef.current.click(),
           },
         ]}
+        className='scanner-fab'
       />
 
       {isScannerOpen && (
