@@ -1,5 +1,17 @@
 import { getCookie } from '../utils/utils';
 
+export const getUserByEmail = async (email) => {
+  const access_token = getCookie('access_token');
+
+  return await fetch(
+    `${process.env.REACT_APP_HOST}/${process.env.REACT_APP_PROJECT_KEY}/customers?where=email="${email}"`,
+    {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${access_token}` },
+    }
+  );
+};
+
 export const updateUserData = async (version, ailments, groups, scanned) => {
   try {
     const access_token = getCookie('access_token');
