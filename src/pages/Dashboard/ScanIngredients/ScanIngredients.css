@@ -8,12 +8,27 @@
   flex-wrap: wrap;
 }
 
-.scanIngredients .content .image {
+.scanIngredients .content .left .image {
   position: relative;
 }
 
-.scanIngredients .content .image img {
+.scanIngredients .content .left .image img {
   width: 100%;
+}
+
+.scanIngredients .content .left .product {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scanIngredients .content .left .product .productDetails {
+  display: flex;
+  gap: 10px;
+}
+
+.scanIngredients .content .left .product .saveButton {
+  text-align: center;
 }
 
 .scanIngredients .content .details {

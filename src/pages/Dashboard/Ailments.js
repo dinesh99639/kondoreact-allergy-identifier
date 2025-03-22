@@ -99,16 +99,16 @@ const Ailments = () => {
         const scanned = userDetails?.custom.fields.scanned;
         const tempdata = [];
         if (version && groups && scanned) {
-            const data = await updateUserData(version, newAilments, groups, scanned);
-            if (data.success) {
-                data.custom.fields.ailments.forEach(el => {
+            const res = await updateUserData(version, newAilments, groups, scanned);
+            if (res.success) {
+                res.data.custom.fields.ailments.forEach(el => {
                     tempdata.push({ class: 'base', name: el.toLocaleLowerCase() });
                 });
                 setAilments(tempdata);
-                setUserDetails(prev => { return { ...prev, version: data.version, custom: data.custom } });
+                setUserDetails(prev => { return { ...prev, version: res.data.version, custom: res.data.custom } });
                 showNotification({ type: "success", message: "updated data successfully" })
             } else {
-                showNotification({ type: 'error', message: data.error });
+                showNotification({ type: 'error', message: res.error });
             }
         }
     }

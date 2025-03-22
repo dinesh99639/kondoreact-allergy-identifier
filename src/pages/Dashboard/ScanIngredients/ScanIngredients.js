@@ -14,13 +14,21 @@ import {
 import { Reveal } from '@progress/kendo-react-animation';
 import { Typography } from '@progress/kendo-react-common';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { TextBox } from '@progress/kendo-react-inputs';
 
 import './ScanIngredients.css';
+import { DatePicker } from '@progress/kendo-react-dateinputs';
+import { updateGroup } from '../../../services/group';
+import { updateUserData } from '../../../services/userdata';
 
 const ScanIngredients = () => {
   const location = useLocation();
 
   const userContext = useContext(UserContext);
+
+  const [productName, setProductName] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
 
   const [names, setNames] = useState({});
 
@@ -32,6 +40,60 @@ const ScanIngredients = () => {
     isLoading: false,
     data: null,
   });
+
+  const saveProduct = async () => {
+    if (!productName || !expiryDate) {
+      return;
+    }
+
+    setIsSaveInProgress(true);
+
+    const formattedExpiryDate = new Date(expiryDate)
+      .toLocaleDateString()
+      .split('/')
+      .reverse()
+      .join('-');
+
+    const scannedItem = [
+      new Date().toISOString(),
+      productName,
+      formattedExpiryDate,
+    ];
+
+    const scanned = [...selectedGroup?.scanned, scannedItem];
+
+    if (selectedGroup.id === 'self') {
+      const user = { ...userContext.userDetails };
+
+      const res = await updateUserData(
+        user?.version,
+        user?.custom?.fields?.ailments,
+        user?.custom?.fields?.groups.map((group) => ({
+          typeId: 'customer-group',
+          id: group.id,
+        })),
+        scanned
+      );
+
+      user.version = res?.data?.version;
+      user.custom.fields.scanned = scanned;
+
+      userContext.setUserDetails(user);
+    } else {
+      const updatedGroup = await updateGroup({ ...selectedGroup, scanned });
+
+      const user = { ...userContext.userDetails };
+      user.custom.fields.groups.forEach((group) => {
+        if (group.id === selectedGroup.id) {
+          group.obj = updatedGroup.data;
+        }
+      });
+
+      userContext.setUserDetails(user);
+    }
+
+    setIsSaveInProgress(false);
+  };
 
   const handleExpansion = (id) => {
     setExpansionPanels((prev) => ({
@@ -71,13 +133,13 @@ const ScanIngredients = () => {
 
     const expansionPanels = {};
     const keys = Object.keys(res);
-    let defaultExpansionValue = false;
 
+    let defaultExpansionValue = false;
     if (keys.length === 1) {
       defaultExpansionValue = true;
     }
 
-    Object.keys(res).forEach((key) => {
+    keys.forEach((key) => {
       expansionPanels[key] = defaultExpansionValue;
     });
 
@@ -90,6 +152,7 @@ const ScanIngredients = () => {
     const self = {
       id: 'self',
       name: 'Self',
+      scanned: userDetails?.scanned,
       accepted: [
         {
           id: userDetails?.id,
@@ -109,15 +172,50 @@ const ScanIngredients = () => {
     setGroups(groups);
     setSelectedGroup(self);
 
-    console.log('parseUserData', userDetails, groups);
+    setNames({
+      [userDetails.id]: `${userDetails.firstName} ${userDetails.lastName}`,
+    });
   }, []);
 
   return (
     <div className="scanIngredients">
       {location.state?.image ? (
         <div className="content">
-          <div className="image">
-            <img src={location.state.image} />
+          <div className="left">
+            <div className="image">
+              <img src={location.state.image} />
+            </div>
+            {identification.data && (
+              <div className="product">
+                <div className="productDetails">
+                  <TextBox
+                    fillMode="Outline"
+                    placeholder="Product name"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                  />
+                  <DatePicker
+                    fillMode="outline"
+                    placeholder="Expiry date"
+                    format="yyyy-MM-dd"
+                    value={expiryDate}
+                    onChange={(e) => setExpiryDate(e.target.value)}
+                  />
+                </div>
+                <div className="saveButton">
+                  <Button
+                    themeColor="primary"
+                    style={{ width: '90px' }}
+                    onClick={saveProduct}
+                  >
+                    {isSaveInProgress && (
+                      <Loader size="small" type="pulsing" themeColor="light" />
+                    )}{' '}
+                    Save
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
           {!identification.data ? (
             <div className="details">
