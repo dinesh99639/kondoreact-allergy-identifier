@@ -110,31 +110,28 @@ const ExpiryProducts = () => {
           Group Scanned Products
         </p>
       </div>
-      <ScannedProducts
-        scannedProducts={sortedUserScannedProducts}
-        scannedByGroup={false}
-        deleteItem={deleteItem}
-      />
       {selected === 'User Scanned Products' ? (
         <>
-          {sortedUserScannedProducts.length === 0 && (
+          {sortedUserScannedProducts.length === 0 ? (
             <NotFound message="NO DATA" />
+          ) : (
+            <ScannedProducts
+              scannedProducts={sortedUserScannedProducts}
+              scannedByGroup={false}
+              deleteItem={deleteItem}
+            />
           )}
-          <ScannedProducts
-            scannedProducts={sortedUserScannedProducts}
-            scannedByGroup={false}
-            deleteItem={deleteItem}
-          />
         </>
       ) : (
         <>
-          {sortedGroupScannedProducts.length === 0 && (
+          {sortedGroupScannedProducts.length === 0 ? (
             <NotFound message="NO DATA" />
+          ) : (
+            <ScannedProducts
+              scannedProducts={sortedGroupScannedProducts}
+              scannedByGroup={true}
+            />
           )}
-          <ScannedProducts
-            scannedProducts={sortedGroupScannedProducts}
-            scannedByGroup={true}
-          />
         </>
       )}
     </div>
