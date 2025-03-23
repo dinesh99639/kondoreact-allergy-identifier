@@ -20,7 +20,7 @@ export const parseGroups = (groups) => {
     groups?.map((data) => {
       const group = data.obj;
 
-      if (!group) return undefined;
+      if (!group) return { id: data.id };
 
       return {
         id: group?.id,
