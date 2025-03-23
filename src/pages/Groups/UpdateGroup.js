@@ -157,7 +157,7 @@ const UpdateGroup = ({
         emails.push(el.obj.email);
       } else {
         tempData.push(el.name);
-        addedData.push({ id: el.id });
+        addedData.push({ id: el.id, email: el.obj.email });
         emails.push(el.obj.email);
       }
     });
@@ -226,12 +226,34 @@ const UpdateGroup = ({
         pending: addedData,
         accepted: [{ id: currentUserId }],
       })
-        .then((res) => {
-          if (res.statusCode === 201) {
-            showNotification({
-              type: 'success',
-              message: 'Group created Successfully',
+        .then(async (res) => {
+          if (res.success) {
+            const emails = [{ email: userDetails.email }, ...addedData].map(
+              (user) => user.email
+            );
+
+            const usersResponse = await (await getUsersByEmail(emails)).json();
+            let updatedUsers = [];
+            usersResponse.results.forEach((user) => {
+              user = parseUserData(user);
+              user.groups.push({ id: res.data.id });
+              updatedUsers.push(user);
             });
+
+            console.log('updatedUsers', updatedUsers);
+
+            const groupsRes = await Promise.all(
+              updatedUsers.map((payload) => updateCustomer(payload))
+            );
+
+            if (groupsRes.length) {
+              showNotification({
+                type: 'success',
+                message: 'Group created Successfully',
+              });
+
+              setVisible(false);
+            }
           }
         })
         .catch((err) => {
@@ -241,7 +263,6 @@ const UpdateGroup = ({
           });
         });
     }
-    setVisible(false);
   };
 
   return (
