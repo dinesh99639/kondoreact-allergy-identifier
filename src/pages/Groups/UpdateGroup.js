@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 
 import {getUserByEmail} from '../../services/userdata'
-import { updateGroup } from '../../services/group';
-import NotificationContext from '../../context/NotificationContext';
+import { createGroup, updateGroup } from '../../services/group';
 
+import NotificationContext from '../../context/NotificationContext';
+import UserContext from '../../context/UserContext';
 
 import { Dialog } from '@progress/kendo-react-dialogs';
 import { Chip, Button } from '@progress/kendo-react-buttons';
@@ -19,8 +20,9 @@ const UpdateGroup = ({ visible, setVisible, title, selectedId,selectedGroup, gro
     const [error, setError] = useState('')
     const [inputValue, setInputValue] = useState('');
 
-  const { showNotification } = useContext(NotificationContext);
-
+    const { showNotification } = useContext(NotificationContext);
+    const { userDetails, setUserDetails } = useContext(UserContext);
+    const {email:currentUserMail, id:currentUserId} = userDetails;
 
     useEffect(() => {
         const tempData = [];
@@ -84,6 +86,11 @@ const UpdateGroup = ({ visible, setVisible, title, selectedId,selectedGroup, gro
     };
 
     const handleAddUser = async () => {
+        if(inputValue === currentUserMail) {
+            showNotification({ type:'error', message:'current user will be auto added'});
+            setInputValue('');
+            return
+        }
         const el = data.find(
           (el) =>
             el.name.toLocaleLowerCase() === inputValue.toLocaleLowerCase()
@@ -149,7 +156,20 @@ const UpdateGroup = ({ visible, setVisible, title, selectedId,selectedGroup, gro
                 };
             });
             
+        } 
+        else {
+            createGroup({key:Date.now(), name:groupname, pending:addedData, accepted:[{id:currentUserId}]})
+            .then(res => {
+                if(res.statusCode === 201 ) {
+                    showNotification({ type: 'success', message: 'Group created Successfully' })
+                }
+            }
+            )
+            .catch(err=>{
+                showNotification({ type: 'error', message: err.message || 'Something went wrong' })
+            })
         }
+        setVisible(false);
       };
 
     return <Dialog title={title} onClose={()=>{setVisible(!visible)}}>
