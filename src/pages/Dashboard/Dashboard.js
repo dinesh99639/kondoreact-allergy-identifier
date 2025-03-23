@@ -52,7 +52,7 @@ const Dashboard = () => {
         <Dialog
           style={{
             width: '300px',
-            height: '250px',
+            height: '200px',
             top: 'unset',
             right: '10px',
             left: 'unset',
@@ -66,7 +66,7 @@ const Dashboard = () => {
             setVisible(false);
           }}
         >
-          <div style={{ margin: '25px', textAlign: 'center' }}>
+          <div>
             {constants.disclaimerMessage}
           </div>
         </Dialog>
