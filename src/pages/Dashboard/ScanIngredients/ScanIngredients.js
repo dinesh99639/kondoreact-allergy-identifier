@@ -224,7 +224,9 @@ const ScanIngredients = () => {
               </div>
             </div>
           ) : (
-            isSaveInProgress === false && <div className='saveSuccess'>Product saved successfully.</div>
+            isSaveInProgress === false && (
+              <div className="saveSuccess">Product saved successfully.</div>
+            )
           )}
         </div>
         {image.type ? (

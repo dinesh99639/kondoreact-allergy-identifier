@@ -25,7 +25,10 @@ const Group = ({ group, handleUpdateGroup }) => {
         <div>{group.name}</div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <MdDeleteForever style={{ color: '#4D55CC', cursor: 'pointer' }} />
-          <MdEdit style={{ color: '#4D55CC', cursor: 'pointer' }} onClick={()=>handleUpdateGroup(group.id, group.name)} />
+          <MdEdit
+            style={{ color: '#4D55CC', cursor: 'pointer' }}
+            onClick={() => handleUpdateGroup(group.id, group.name)}
+          />
           {!isOpen && (
             <FaChevronDown
               style={{ color: '#4D55CC', cursor: 'pointer' }}
@@ -62,7 +65,7 @@ const Group = ({ group, handleUpdateGroup }) => {
             {group.accepted.map((user) => {
               return (
                 <div>
-                  {user?.firstName} {user?.lastName}
+                  {user?.firstName} {user?.lastName} {user?.email}
                 </div>
               );
             })}
