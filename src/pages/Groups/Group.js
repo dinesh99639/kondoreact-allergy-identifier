@@ -15,16 +15,20 @@ const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
         style={{
           padding: '1rem',
           margin: '0.5rem',
-          width: '20rem',
           justifyContent: 'space-between',
           display: 'flex',
           boxShadow:
             'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px',
         }}
+        className='group-row'
+        onClick={handleToggleAccordion}
       >
         <div>{group.name}</div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <MdDeleteForever style={{ color: '#4D55CC', cursor: 'pointer' }} onClick={()=>handleDeleteGroup(group)} />
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <MdDeleteForever
+            style={{ color: '#4D55CC', cursor: 'pointer' }}
+            onClick={() => handleDeleteGroup(group)}
+          />
           <MdEdit
             style={{ color: '#4D55CC', cursor: 'pointer' }}
             onClick={() => handleUpdateGroup(group.id, group.name)}
@@ -54,7 +58,7 @@ const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
             flexDirection: 'column',
           }}
         >
-          <div
+          <ul
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -64,12 +68,12 @@ const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
           >
             {group.accepted.map((user) => {
               return (
-                <div>
-                  {user?.firstName} {user?.lastName} {user?.email}
-                </div>
+                <li>
+                  {user?.firstName} {user?.lastName} ({user?.email})
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       )}
     </div>

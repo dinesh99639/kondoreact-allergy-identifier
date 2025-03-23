@@ -1,21 +1,31 @@
 .accordion {
-    width: 350px;
-    margin: 0 auto;
+  width: 350px;
+  margin: 0 auto;
 }
 
 .accordion-item {
-    border: 1px solid #ddd;
-    margin: 5px 0;
+  border: 1px solid #ddd;
+  margin: 5px 0;
 }
 
 .accordion-header {
-    background-color: #f1f1f1;
-    padding: 10px;
-    cursor: pointer;
-    font-weight: bold;
+  background-color: #f1f1f1;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 .accordion-content {
-    padding: 10px;
-    background-color: #f9f9f9;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.group-row {
+  width: 20rem;
+}
+
+@media screen and (max-width: 456px) {
+  .group-row {
+    width: 60vw;
+  }
 }

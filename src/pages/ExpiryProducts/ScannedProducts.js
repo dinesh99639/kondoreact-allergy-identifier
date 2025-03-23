@@ -25,13 +25,14 @@ const ScannedProducts = ({ scannedProducts, scannedByGroup, deleteItem }) => {
               padding: '1rem',
               margin: '0.5rem',
               display: 'flex',
-              width: '20rem',
               justifyContent: 'space-between',
+              flexWrap: "wrap",
               backgroundColor: backgroundColor,
               boxShadow:
                 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px',
               color: 'white',
             }}
+            className='product-row'
             key={idx}
           >
             <div>{sp[1]}</div>
@@ -43,17 +44,19 @@ const ScannedProducts = ({ scannedProducts, scannedByGroup, deleteItem }) => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Tooltip anchorElement={`target-${idx}`}>
-                  <span
-                    title={sp[2]}
-                    style={{
-                      display: 'inline-block',
-                    }}
-                  >
-                    <FaHourglass style={{ cursor: 'pointer' }} />
-                  </span>
-                </Tooltip>
-                &nbsp;{' '}
+                <div className="expired-hourglass-icon">
+                  <Tooltip anchorElement={`target-${idx}`}>
+                    <span
+                      title={sp[2]}
+                      style={{
+                        display: 'inline-block',
+                      }}
+                    >
+                      <FaHourglass style={{ cursor: 'pointer' }} />
+                    </span>
+                  </Tooltip>
+                  &nbsp;{' '}
+                </div>
                 {sp[4] > 0 ? (
                   <>
                     Expires in {sp[4]} {sp[4] > 1 ? 'Days' : 'Day'}
