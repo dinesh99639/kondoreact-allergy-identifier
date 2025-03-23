@@ -51,16 +51,10 @@ const ScanIngredients = () => {
 
     setIsSaveInProgress(true);
 
-    const formattedExpiryDate = new Date(expiryDate)
-      .toLocaleDateString()
-      .split('/')
-      .reverse()
-      .join('-');
-
     const scannedItem = [
       new Date().toISOString(),
       productName,
-      formattedExpiryDate,
+      new Date(expiryDate),
     ];
 
     const scanned = [...selectedGroup?.scanned, scannedItem];
