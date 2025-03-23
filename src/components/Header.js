@@ -39,7 +39,7 @@ const Header = (props) => {
   useEffect(() => {
     setPendingRequests(
       groups.reduce((acc, group) => {
-        const hasRequestInCurrentGroup = group.pending.find(
+        const hasRequestInCurrentGroup = group?.pending?.find(
           (pendingUser) => pendingUser.id === userDetails.id
         );
         if (hasRequestInCurrentGroup) {
