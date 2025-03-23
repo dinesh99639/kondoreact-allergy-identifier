@@ -144,7 +144,7 @@ const Header = (props) => {
         <AppBarSpacer />
         <AppBarSection style={{ cursor: 'pointer' }}>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Typography.h6 style={{ margin: 'auto 0' }}>
+            <Typography.h6 className='header-username' style={{ margin: 'auto 0' }}>
               {userDetails.firstName + ' ' + userDetails.lastName}
             </Typography.h6>
             <div style={{ position: 'relative', display: 'inline-block' }}>
