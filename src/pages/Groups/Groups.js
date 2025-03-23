@@ -36,13 +36,10 @@ const Groups = () => {
 
   return (
     <>
-      <Button
-        onClick={handleAddGroup}
-        style={{ marginLeft: '250px', marginTop: '20px' }}
-      >
-        Add Group
-      </Button>
       <div className="ailment-container">
+        <div style={{ textAlign: "center" }}>
+          <Button onClick={handleAddGroup}>Add Group</Button>
+        </div>
         <div
           style={{
             display: 'flex',
