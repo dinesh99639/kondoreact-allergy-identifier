@@ -3,9 +3,10 @@ import { useLocation } from 'react-router';
 
 import UserContext from '../../../context/UserContext';
 import { extractData } from '../../../utils/generateiveAI';
+import { getUserDetails } from '../../../services/auth';
 import { updateUserData } from '../../../services/userdata';
 import { updateGroup } from '../../../services/group';
-import { parseUserData } from '../../../utils/utils';
+import { getCookie, parseUserData } from '../../../utils/utils';
 
 import { Button, Chip } from '@progress/kendo-react-buttons';
 import { Loader } from '@progress/kendo-react-indicators';
@@ -84,14 +85,12 @@ const ScanIngredients = () => {
     } else {
       const updatedGroup = await updateGroup({ ...selectedGroup, scanned });
 
-      const user = { ...userContext.userDetails };
-      user.custom.fields.groups.forEach((group) => {
-        if (group.id === selectedGroup.id) {
-          group.obj = updatedGroup.data;
+      if (updatedGroup.success) {
+        const userDetailsRes = await getUserDetails(getCookie('access_token'));
+        if (userDetailsRes.success) {
+          userContext.setUserDetails(userDetailsRes.data);
         }
-      });
-
-      userContext.setUserDetails(user);
+      }
     }
 
     setIsSaveInProgress(false);
