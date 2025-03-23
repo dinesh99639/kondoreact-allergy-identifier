@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import NotFound from '../../components/NotFound/NotFound';
 import UserContext from '../../context/UserContext';
 import NotificationContext from '../../context/NotificationContext';
@@ -6,11 +6,17 @@ import { updateUserData } from '../../services/userdata';
 import './ExpiryProducts.css';
 import { parseUserData } from '../../utils/utils';
 import ScannedProducts from './ScannedProducts';
+import { TabStrip, TabStripTab } from '@progress/kendo-react-layout';
 
 const ExpiryProducts = () => {
   const { userDetails, setUserDetails } = useContext(UserContext);
   const { showNotification } = useContext(NotificationContext);
+  const [selected, setSelected] = useState('User Scanned Products');
   const parsedUserData = parseUserData(userDetails);
+
+  const handleSelect = (e) => {
+    setSelected(e.selected);
+  };
 
   const sortScannedProducts = (scannedProducts) =>
     scannedProducts
@@ -71,31 +77,66 @@ const ExpiryProducts = () => {
   };
 
   return (
-    <div className="expiry-products-container">
-      {sortedUserScannedProducts.length === 0 &&
-        sortedGroupScannedProducts.length === 0 && <NotFound />}
-      {}
-      <div>
-        {sortedUserScannedProducts.length > 0 && (
-          <>
-            <h3>User Scanned Products</h3>
-            <ScannedProducts
-              scannedProducts={sortedUserScannedProducts}
-              scannedByGroup={false}
-              deleteItem={deleteItem}
-            />
-          </>
-        )}
-        {sortedGroupScannedProducts.length > 0 && (
-          <>
-            <h3>Group Scanned Products</h3>
-            <ScannedProducts
-              scannedProducts={sortedGroupScannedProducts}
-              scannedByGroup={true}
-            />
-          </>
-        )}
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          margin: '1rem',
+          gap: '1rem',
+          justifyContent: 'center',
+        }}
+      >
+        <p
+          style={{
+            color: selected === 'User Scanned Products' ? '#4D55CC' : '#000000',
+            cursor: 'pointer',
+            fontWeight:
+              selected === 'User Scanned Products' ? 'bold' : 'normal',
+          }}
+          onClick={() => setSelected('User Scanned Products')}
+        >
+          User Scanned Products
+        </p>
+        <p
+          style={{
+            color:
+              selected === 'Group Scanned Products' ? '#4D55CC' : '#000000',
+            cursor: 'pointer',
+            fontWeight:
+              selected === 'Group Scanned Products' ? 'bold' : 'normal',
+          }}
+          onClick={() => setSelected('Group Scanned Products')}
+        >
+          Group Scanned Products
+        </p>
       </div>
+      <ScannedProducts
+        scannedProducts={sortedUserScannedProducts}
+        scannedByGroup={false}
+        deleteItem={deleteItem}
+      />
+      {selected === 'User Scanned Products' ? (
+        <>
+          {sortedUserScannedProducts.length === 0 && (
+            <NotFound message="NO DATA" />
+          )}
+          <ScannedProducts
+            scannedProducts={sortedUserScannedProducts}
+            scannedByGroup={false}
+            deleteItem={deleteItem}
+          />
+        </>
+      ) : (
+        <>
+          {sortedGroupScannedProducts.length === 0 && (
+            <NotFound message="NO DATA" />
+          )}
+          <ScannedProducts
+            scannedProducts={sortedGroupScannedProducts}
+            scannedByGroup={true}
+          />
+        </>
+      )}
     </div>
   );
 };

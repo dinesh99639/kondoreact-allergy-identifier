@@ -1,6 +1,6 @@
 import React from 'react';
 import './NotFound.css';
-const NotFound = () => {
+const NotFound = ({ message }) => {
   return (
     <div className="main_wrapper">
       <div className="main">
@@ -33,10 +33,14 @@ const NotFound = () => {
             <div className="screen_out">
               <div className="screen_out1">
                 <div className="screen">
-                  <span className="notfound_text"> NOT FOUND</span>
+                  <span className="notfound_text">
+                    {message ?? 'NOT FOUND'}
+                  </span>
                 </div>
                 <div className="screenM">
-                  <span className="notfound_text"> NOT FOUND</span>
+                  <span className="notfound_text">
+                    {message ?? 'NOT FOUND'}
+                  </span>
                 </div>
               </div>
             </div>
