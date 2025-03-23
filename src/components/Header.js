@@ -275,6 +275,7 @@ const Header = (props) => {
                                   style={{
                                     display: 'flex',
                                     justifyContent: 'space-between',
+                                    alignItems:'center'
                                   }}
                                 >
                                   You are requested to join {pr.name}

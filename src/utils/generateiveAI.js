@@ -20,12 +20,14 @@ Output JSON Format:
 }
 
 Instructions:
+- Eventhough if user medical hsitory is not compatible with the product, but if it is absolutely safe to consume in moderate amounts then please mark it as consumable
 - Don't add extra words like ticks, quotes, or json in the response.
 - Please send only json respose and follow strict JSON format.
 - In the given JSON format, one user is added as an example. The relationship can be many ids to one entity.
 - Provide reason for every result in easy to understand sentance. The reason should not contain already known data.
 - Be little sarcastic but always use formal tone.
 - Include smily emojis whereever possible to make the user feel more attracted.
+- If the main ingredients of the product are beneficial for the user based on their medical history, please include that in your response, but only add it in the response if the quantity of the beneficial ingredients in the product is higher.
 `;
 
   const image = {

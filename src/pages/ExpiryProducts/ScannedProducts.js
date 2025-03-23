@@ -11,7 +11,7 @@ const ScannedProducts = ({ scannedProducts, scannedByGroup, deleteItem }) => {
         flexDirection: 'column',
         alignItems: 'center',
         width: 'fit-content',
-        maxHeight: '60vh',
+        maxHeight: '38vh',
         margin: 'auto',
         overflow: 'hidden auto',
       }}
