@@ -108,12 +108,17 @@ const Header = (props) => {
             svgIcon={menuIcon}
             onClick={toggleDrawer}
           ></Button>
-          <Typography.h6 style={{ fontSize: '20px', margin: "auto 10px" }}>Allergy Identifier</Typography.h6>
+          <Typography.h6 style={{ fontSize: '20px', margin: 'auto 10px' }}>
+            Allergy Identifier
+          </Typography.h6>
         </AppBarSection>
         <AppBarSpacer style={{ width: 4 }} />
         <AppBarSpacer />
         <AppBarSection style={{ cursor: 'pointer' }}>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <Typography.h6 style={{ margin: "auto 0" }}>
+              {userDetails.firstName + ' ' + userDetails.lastName}
+            </Typography.h6>
             <div style={{ position: 'relative', display: 'inline-block' }}>
               <IoMdNotifications
                 style={{ cursor: 'pointer', fontSize: '1.5rem' }}
