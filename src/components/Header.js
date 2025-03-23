@@ -27,7 +27,7 @@ const Header = (props) => {
   const anchor = useRef(null);
   const [showDrawer, setShowDrawer] = useState(window.innerWidth > 456);
   const [pendingRequests, setPendingRequests] = useState([]);
-  const pendingRequestsCount = useRef(0);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [expiredProducts, setExpiredProducts] = useState([]);
   const { setUserDetails, userDetails } = useContext(UserContext);
@@ -43,7 +43,7 @@ const Header = (props) => {
           (pendingUser) => pendingUser.id === userDetails.id
         );
         if (hasRequestInCurrentGroup) {
-          pendingRequestsCount.current += 1;
+          setPendingRequestsCount((prev) => prev + 1);
           return [
             ...acc,
             { request: hasRequestInCurrentGroup, name: group.name },
@@ -66,6 +66,7 @@ const Header = (props) => {
       ...userDetails.custom.fields.scanned,
       ...groupScannedProducts,
     ].filter((product) => {
+      console.log(product, 'product');
       const remaingDaysToExpire = Math.floor(
         (new Date(product[2]) - new Date()) / (1000 * 60 * 60 * 24)
       );
@@ -79,6 +80,23 @@ const Header = (props) => {
     getExpiredProductsDetails();
   }, [userDetails]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        anchor.current &&
+        !anchor.current.contains(event.target) &&
+        !event.target.closest('.k-popup')
+      ) {
+        setShowNotificationPanel(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const toggleNotificationPanel = () => {
     setShowNotificationPanel((prev) => !prev);
   };
@@ -86,7 +104,6 @@ const Header = (props) => {
   const handleAcceptInvitation = async (request, groupName) => {
     groups.forEach(async (group) => {
       if (group.name === groupName) {
-        pendingRequestsCount.current -= 1;
         group.pending = group.pending.filter(
           (pendingUser) => pendingUser.id !== request.id
         );
@@ -101,8 +118,20 @@ const Header = (props) => {
               type: 'success',
               message: `You have accepted the invitation to join ${groupName}`,
             });
+            setPendingRequestsCount((prev) => prev - 1);
+          } else {
+            showNotification({
+              type: 'error',
+              message: `${userDetails.error}`,
+            });
           }
+        } else {
+          showNotification({
+            type: 'error',
+            message: 'Failed to accept the invitation',
+          });
         }
+        setShowNotificationPanel(false);
       }
     });
   };
@@ -110,18 +139,50 @@ const Header = (props) => {
   const handleRejectInvitation = (request, groupName) => {
     groups.forEach(async (group) => {
       if (group.name === groupName) {
-        pendingRequestsCount.current -= 1;
+        setPendingRequestsCount((prev) => prev - 1);
         group.pending = group.pending.filter(
           (pendingUser) => pendingUser.id !== request.id
         );
+        setUserDetails((prev) => {
+          return {
+            ...prev,
+            custom: {
+              ...prev.custom,
+              fields: {
+                ...prev.custom.fields,
+                groups: [
+                  ...prev.custom.fields.groups.filter(
+                    (grp) => grp.name !== groupName
+                  ),
+                  group,
+                ],
+              },
+            },
+          };
+        });
         const response = await updateGroup(group);
         if (response.success) {
-          setUserDetails(response.data);
+          const access_token = getCookie('access_token');
+          const userDetails = await getUserDetails(access_token);
+          if (userDetails.success) {
+            setUserDetails(userDetails.data);
+            showNotification({
+              type: 'success',
+              message: `You have accepted the invitation to join ${groupName}`,
+            });
+          } else {
+            showNotification({
+              type: 'error',
+              message: `${userDetails.error}`,
+            });
+          }
+        } else {
           showNotification({
-            type: 'success',
-            message: `You have rejected the invitation to join ${groupName}`,
+            type: 'error',
+            message: 'Failed to reject the invitation',
           });
         }
+        setShowNotificationPanel(false);
       }
     });
   };
@@ -153,7 +214,7 @@ const Header = (props) => {
                 onClick={toggleNotificationPanel}
                 ref={anchor}
               />
-              {expiredProducts.length > 0 && (
+              {expiredProducts.length + pendingRequestsCount > 0 && (
                 <span
                   style={{
                     position: 'absolute',
@@ -167,7 +228,7 @@ const Header = (props) => {
                     fontWeight: 'bold',
                   }}
                 >
-                  {expiredProducts.length + pendingRequestsCount.current}
+                  {expiredProducts.length + pendingRequestsCount}
                 </span>
               )}
               <Popup
@@ -200,7 +261,6 @@ const Header = (props) => {
                   )}
                   {pendingRequests.length > 0 &&
                     pendingRequests.map((pr) => {
-                      console.log('pr', pr);
                       return (
                         <div className="card">
                           <div className="card-wrapper">
@@ -251,14 +311,8 @@ const Header = (props) => {
                         </div>
                       );
                     })}
-                  {expiredProducts.length + pendingRequestsCount.current ===
-                    0 && (
-                    <div
-                      className="card"
-                      onClick={() => {
-                        navigate('/products-expiry');
-                      }}
-                    >
+                  {expiredProducts.length + pendingRequestsCount === 0 && (
+                    <div className="card">
                       <div className="card-wrapper">
                         <div className="card-content">
                           <div className="card-title-wrapper">
