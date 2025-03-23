@@ -62,18 +62,17 @@ const Header = (props) => {
     const groupScannedProducts = parsedUserData.groups
       .map((group) => group.scanned)
       .flat();
-    const expiredProducts = [
+    const productsExpired = [
       ...userDetails.custom.fields.scanned,
       ...groupScannedProducts,
     ].filter((product) => {
-      console.log(product, 'product');
       const remaingDaysToExpire = Math.floor(
         (new Date(product[2]) - new Date()) / (1000 * 60 * 60 * 24)
       );
 
       if (remaingDaysToExpire <= 0) return product;
     });
-    setExpiredProducts(expiredProducts);
+    setExpiredProducts(productsExpired);
   };
 
   useEffect(() => {
@@ -205,7 +204,10 @@ const Header = (props) => {
         <AppBarSpacer />
         <AppBarSection style={{ cursor: 'pointer' }}>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Typography.h6 className='header-username' style={{ margin: 'auto 0' }}>
+            <Typography.h6
+              className="header-username"
+              style={{ margin: 'auto 0' }}
+            >
               {userDetails.firstName + ' ' + userDetails.lastName}
             </Typography.h6>
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -214,7 +216,7 @@ const Header = (props) => {
                 onClick={toggleNotificationPanel}
                 ref={anchor}
               />
-              {expiredProducts.length + pendingRequestsCount > 0 && (
+              {expiredProducts.length > 0 + pendingRequestsCount > 0 && (
                 <span
                   style={{
                     position: 'absolute',
@@ -228,7 +230,7 @@ const Header = (props) => {
                     fontWeight: 'bold',
                   }}
                 >
-                  {expiredProducts.length + pendingRequestsCount}
+                  {(expiredProducts.length > 0 ? 1 : 0) + pendingRequestsCount}
                 </span>
               )}
               <Popup
