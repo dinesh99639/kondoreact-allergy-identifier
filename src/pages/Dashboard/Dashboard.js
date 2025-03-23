@@ -14,20 +14,20 @@ const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [selected, setSelected] = useState(0);
-  const[visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
   const handleSelect = (e) => {
     setSelected(e.selected);
     setSearchParams();
   };
 
-  useEffect(()=>{
-    if(!localStorage.getItem('disclaimer')){
-      setVisible(true)
-      localStorage.setItem('disclaimer', true)
+  useEffect(() => {
+    if (!localStorage.getItem('disclaimer')) {
+      setVisible(true);
+      localStorage.setItem('disclaimer', true);
     }
-  },[]);
-  
+  }, []);
+
   useEffect(() => {
     if (searchParams.get('tab') === 'scan-ingredients') {
       setSelected(1);
@@ -48,11 +48,29 @@ const Dashboard = () => {
           <ScanIngredients />
         </TabStripTab>
       </TabStrip>
-      {visible &&<Dialog style={{ width: '300px',height: '250px',top: 'unset',right: '10px',left: 'unset',bottom: '10px',alignItems: 'unset',justifyContent: 'unset', flexDirection: 'unset'}} title={<b>{constants.disclaimer}</b>} onClose={()=>{setVisible(false)}}>
-        <div style={{ margin: '25px', textAlign: 'center' }}>
+      {visible && (
+        <Dialog
+          style={{
+            width: '300px',
+            height: '250px',
+            top: 'unset',
+            right: '10px',
+            left: 'unset',
+            bottom: '10px',
+            alignItems: 'unset',
+            justifyContent: 'unset',
+            flexDirection: 'unset',
+          }}
+          title={<b>{constants.disclaimer}</b>}
+          onClose={() => {
+            setVisible(false);
+          }}
+        >
+          <div style={{ margin: '25px', textAlign: 'center' }}>
             {constants.disclaimerMessage}
-        </div>
-    </Dialog>}
+          </div>
+        </Dialog>
+      )}
     </>
   );
 };
