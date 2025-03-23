@@ -240,19 +240,22 @@ const UpdateGroup = ({
               updatedUsers.push(user);
             });
 
-            console.log('updatedUsers', updatedUsers);
-
             const groupsRes = await Promise.all(
               updatedUsers.map((payload) => updateCustomer(payload))
             );
 
             if (groupsRes.length) {
-              showNotification({
-                type: 'success',
-                message: 'Group created Successfully',
-              });
-
-              setVisible(false);
+              const userDetailsRes = await getUserDetails(
+                getCookie('access_token')
+              );
+              if (userDetailsRes.success) {
+                setUserDetails(userDetailsRes.data);
+                showNotification({
+                  type: 'success',
+                  message: 'Group created Successfully',
+                });
+                setVisible(false);
+              }
             }
           }
         })
