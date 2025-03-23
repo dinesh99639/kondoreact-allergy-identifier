@@ -167,7 +167,12 @@ const ScanIngredients = () => {
       ],
     };
 
-    const groups = [self, ...userDetails?.groups] || [self];
+    const groups = [
+      self,
+      ...userDetails?.groups.filter((group) =>
+        group.accepted.find((user) => user.id === userDetails?.id)
+      ),
+    ] || [self];
 
     setGroups(groups);
     setSelectedGroup(self);
@@ -191,7 +196,7 @@ const ScanIngredients = () => {
       isLoading: false,
       data: null,
     });
-    
+
     reset();
   }, [location?.state]);
 
