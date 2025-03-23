@@ -167,7 +167,7 @@ const Ailments = () => {
                   />
                 );
               })}
-            {(!ailments || ailments.length === 0) && <span>'No Data !'</span>}
+            {(!ailments || ailments.length === 0) && <span>No Data!</span>}
           </div>
         </Card>
 
