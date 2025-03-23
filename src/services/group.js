@@ -4,14 +4,14 @@ export const createGroup = async (group) => {
   try {
     const access_token = getCookie('access_token');
 
-    let { key: groupName, name, scanned, pending, accepted, rejected } = group;
+    let { key: groupName, name, scanned=[], pending, accepted, rejected=[] } = group;
 
     pending = pending.map((user) => ({ typeId: 'customer', id: user?.id }));
     accepted = accepted.map((user) => ({ typeId: 'customer', id: user?.id }));
     rejected = rejected.map((user) => ({ typeId: 'customer', id: user?.id }));
 
     const payload = {
-      groupName: groupName,
+      groupName: groupName.toString(),
       custom: {
         type: {
           key: 'customer-group-custom-type',
