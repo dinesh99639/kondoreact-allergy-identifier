@@ -6,7 +6,7 @@ import { FaChevronUp } from 'react-icons/fa';
 
 const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const handleToggleAccordion = () => {
+  const handleToggleAccordion = (e) => {
     setIsOpen((prev) => !prev);
   };
   return (
@@ -20,7 +20,7 @@ const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
           boxShadow:
             'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px',
         }}
-        className='group-row'
+        className="group-row"
         onClick={handleToggleAccordion}
       >
         <div>{group.name}</div>
@@ -34,16 +34,10 @@ const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
             onClick={() => handleUpdateGroup(group.id, group.name)}
           />
           {!isOpen && (
-            <FaChevronDown
-              style={{ color: '#4D55CC', cursor: 'pointer' }}
-              onClick={handleToggleAccordion}
-            />
+            <FaChevronDown style={{ color: '#4D55CC', cursor: 'pointer' }} />
           )}
           {isOpen && (
-            <FaChevronUp
-              style={{ color: '#4D55CC', cursor: 'pointer' }}
-              onClick={handleToggleAccordion}
-            />
+            <FaChevronUp style={{ color: '#4D55CC', cursor: 'pointer' }} />
           )}
         </div>
       </div>
