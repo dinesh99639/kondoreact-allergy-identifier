@@ -14,6 +14,7 @@ import Group from './Group';
 import UpdateGroup from './UpdateGroup';
 
 import './Groups.css';
+import NotFound from '../../components/NotFound/NotFound';
 
 const Groups = () => {
   const { userDetails, setUserDetails } = useContext(UserContext);
@@ -82,7 +83,7 @@ const Groups = () => {
   return (
     <>
       <div className="ailment-container">
-        <div style={{ textAlign: 'center', margin: "15px 0" }}>
+        <div style={{ textAlign: 'center', margin: '15px 0' }}>
           <Button onClick={handleAddGroup}>Add Group</Button>
         </div>
         <div
@@ -96,6 +97,9 @@ const Groups = () => {
             overflow: 'hidden auto',
           }}
         >
+          {parsedUserDetails?.groups?.length === 0 && (
+            <NotFound message="No Groups Found" />
+          )}
           {parsedUserDetails?.groups &&
             parsedUserDetails.groups
               .filter(
