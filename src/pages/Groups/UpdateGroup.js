@@ -1,17 +1,17 @@
 import { useState, useEffect, useContext } from 'react';
 
-import UserContext from '../../context/UserContext';
-import NotificationContext from '../../context/NotificationContext';
-import { getUserDetails } from '../../services/auth';
 import { getUsersByEmail, updateCustomer } from '../../services/userdata';
-import { updateGroup } from '../../services/group';
+import { createGroup, updateGroup } from '../../services/group';
+import { getUserDetails } from '../../services/auth';
+import { getCookie, parseUserData } from '../../utils/utils';
+import NotificationContext from '../../context/NotificationContext';
+import UserContext from '../../context/UserContext';
 
 import { Dialog } from '@progress/kendo-react-dialogs';
 import { Chip, Button } from '@progress/kendo-react-buttons';
 import { Card } from '@progress/kendo-react-layout';
 import { Error } from '@progress/kendo-react-labels';
 import { Input } from '@progress/kendo-react-inputs';
-import { getCookie, parseUserData } from '../../utils/utils';
 
 const UpdateGroup = ({
   visible,
@@ -21,7 +21,7 @@ const UpdateGroup = ({
   selectedGroup,
   groups,
 }) => {
-  const { setUserDetails } = useContext(UserContext);
+  const { userDetails, setUserDetails } = useContext(UserContext);
 
   const [data, setData] = useState([]);
   const [groupname, setGroupName] = useState();
@@ -30,6 +30,7 @@ const UpdateGroup = ({
   const [inputValue, setInputValue] = useState('');
 
   const { showNotification } = useContext(NotificationContext);
+  const { email: currentUserMail, id: currentUserId } = userDetails;
 
   useEffect(() => {
     const tempData = [];
@@ -42,7 +43,6 @@ const UpdateGroup = ({
         }
       });
       setData(tempData);
-    } else {
     }
   }, [selectedId]);
 
@@ -90,6 +90,14 @@ const UpdateGroup = ({
   };
 
   const handleAddUser = async () => {
+    if (inputValue === currentUserMail) {
+      showNotification({
+        type: 'error',
+        message: 'current user will be auto added',
+      });
+      setInputValue('');
+      return;
+    }
     const el = data.find(
       (el) => el.name.toLocaleLowerCase() === inputValue.toLocaleLowerCase()
     );
@@ -148,34 +156,34 @@ const UpdateGroup = ({
       }
     });
 
-    const usersResponse = await (await getUsersByEmail(emails)).json();
-    let users = {};
-    usersResponse.results.map((user) => {
-      user = parseUserData(user);
-      users[user.id] = user;
-    });
+    if (selectedId) {
+      const usersResponse = await (await getUsersByEmail(emails)).json();
+      let users = {};
+      usersResponse.results.map((user) => {
+        user = parseUserData(user);
+        users[user.id] = user;
+      });
 
-    const userUpdateRequests = [];
+      const userUpdateRequests = [];
 
-    data.forEach((user) => {
-      if (user.class === 'success') {
-        user.obj = users[user.obj.id];
-        user.obj.groups.push({ id: selectedId });
-        userUpdateRequests.push(user.obj);
-      } else if (user.class === 'error') {
-        user.obj = users[user.obj.id];
-        user.obj.groups = user.obj.groups.filter(
-          (group) => group.id !== selectedId
-        );
-        userUpdateRequests.push(user.obj);
-      }
-    });
+      data.forEach((user) => {
+        if (user.class === 'success') {
+          user.obj = users[user.obj.id];
+          user.obj.groups.push({ id: selectedId });
+          userUpdateRequests.push(user.obj);
+        } else if (user.class === 'error') {
+          user.obj = users[user.obj.id];
+          user.obj.groups = user.obj.groups.filter(
+            (group) => group.id !== selectedId
+          );
+          userUpdateRequests.push(user.obj);
+        }
+      });
 
-    const res = await Promise.all(
-      userUpdateRequests.map((payload) => updateCustomer(payload))
-    );
+      const res = await Promise.all(
+        userUpdateRequests.map((payload) => updateCustomer(payload))
+      );
 
-    if (selectedId && res.length) {
       let tempGrp = [];
       groups.groups.forEach((group) => {
         if (group.id === selectedId) {
@@ -205,7 +213,29 @@ const UpdateGroup = ({
             });
         }
       });
+    } else {
+      createGroup({
+        key: Date.now(),
+        name: groupname,
+        pending: addedData,
+        accepted: [{ id: currentUserId }],
+      })
+        .then((res) => {
+          if (res.statusCode === 201) {
+            showNotification({
+              type: 'success',
+              message: 'Group created Successfully',
+            });
+          }
+        })
+        .catch((err) => {
+          showNotification({
+            type: 'error',
+            message: err.message || 'Something went wrong',
+          });
+        });
     }
+    setVisible(false);
   };
 
   return (
