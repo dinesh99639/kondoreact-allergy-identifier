@@ -19,10 +19,11 @@ import { Popup } from '@progress/kendo-react-popup';
 import { getCookie, parseGroups } from '../utils/utils';
 import { updateGroup } from '../services/group';
 import NotificationContext from '../context/NotificationContext';
+import { Typography } from '@progress/kendo-react-common';
 
 const Header = (props) => {
   const anchor = useRef(null);
-  const [showDrawer, setShowDrawer] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(window.innerWidth > 456);
   const [pendingRequests, setPendingRequests] = useState([]);
   const pendingRequestsCount = useRef(0);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
@@ -107,6 +108,7 @@ const Header = (props) => {
             svgIcon={menuIcon}
             onClick={toggleDrawer}
           ></Button>
+          <Typography.h6 style={{ fontSize: '20px', margin: "auto 10px" }}>Allergy Identifier</Typography.h6>
         </AppBarSection>
         <AppBarSpacer style={{ width: 4 }} />
         <AppBarSpacer />
