@@ -4,7 +4,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { FaChevronDown } from 'react-icons/fa';
 import { FaChevronUp } from 'react-icons/fa';
 
-const Group = ({ group, handleUpdateGroup }) => {
+const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleAccordion = () => {
     setIsOpen((prev) => !prev);
@@ -24,7 +24,7 @@ const Group = ({ group, handleUpdateGroup }) => {
       >
         <div>{group.name}</div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <MdDeleteForever style={{ color: '#4D55CC', cursor: 'pointer' }} />
+          <MdDeleteForever style={{ color: '#4D55CC', cursor: 'pointer' }} onClick={()=>handleDeleteGroup(group)} />
           <MdEdit
             style={{ color: '#4D55CC', cursor: 'pointer' }}
             onClick={() => handleUpdateGroup(group.id, group.name)}
