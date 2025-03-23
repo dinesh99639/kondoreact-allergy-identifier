@@ -15,53 +15,72 @@ const Groups = () => {
   const [title, setTitle] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   const [selectedGroup, setSelectedGroup] = useState(null);
-  
+
   useEffect(() => {
     setParsedUserDetails(parseUserData(userDetails));
   }, []);
 
-const handleAddGroup = ()=>{
-  setSelectedGroup(null);
-  setSelectedId(null);
-  setTitle('Add Group');
-  setVisible(true);
-}
+  const handleAddGroup = () => {
+    setSelectedGroup(null);
+    setSelectedId(null);
+    setTitle('Add Group');
+    setVisible(true);
+  };
 
-const handleUpdateGroup = (id,name)=>{
-  setSelectedGroup(name);
-  setSelectedId(id)
-  setTitle('Update Group');
-  setVisible(true);
-};
+  const handleUpdateGroup = (id, name) => {
+    setSelectedGroup(name);
+    setSelectedId(id);
+    setTitle('Update Group');
+    setVisible(true);
+  };
 
-return (
+  return (
     <>
-    <Button onClick={handleAddGroup} style={{marginLeft:"250px", marginTop:"20px"}}>Add Group</Button>
-    <div className="ailment-container">
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          height: '80vh',
-          width: 'fit-content',
-          margin: 'auto',
-          overflow: 'hidden auto',
-        }}
+      <Button
+        onClick={handleAddGroup}
+        style={{ marginLeft: '250px', marginTop: '20px' }}
       >
-        {parsedUserDetails?.groups &&
-          parsedUserDetails.groups.map((group,idx) => {
-            return <Group group={group} handleUpdateGroup={handleUpdateGroup} key={idx} />;
-          })}
+        Add Group
+      </Button>
+      <div className="ailment-container">
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            height: '80vh',
+            width: 'fit-content',
+            margin: 'auto',
+            overflow: 'hidden auto',
+          }}
+        >
+          {parsedUserDetails?.groups &&
+            parsedUserDetails.groups
+              .filter(
+                (group) =>
+                  !group.pending.find((user) => user.id === userDetails.id)
+              )
+              .map((group, idx) => {
+                return (
+                  <Group
+                    group={group}
+                    handleUpdateGroup={handleUpdateGroup}
+                    key={idx}
+                  />
+                );
+              })}
+        </div>
       </div>
-    </div>
-    {visible && <UpdateGroup 
-                  visible={visible} 
-                  setVisible={setVisible} 
-                  title={title} 
-                  groups={parsedUserDetails} 
-                  selectedId={selectedId}
-                  selectedGroup={selectedGroup}/>}
+      {visible && (
+        <UpdateGroup
+          visible={visible}
+          setVisible={setVisible}
+          title={title}
+          groups={parsedUserDetails}
+          selectedId={selectedId}
+          selectedGroup={selectedGroup}
+        />
+      )}
     </>
   );
 };
