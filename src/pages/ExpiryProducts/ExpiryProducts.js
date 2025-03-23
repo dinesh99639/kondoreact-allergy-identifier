@@ -15,11 +15,11 @@ const ExpiryProducts = () => {
   const sortScannedProducts = (scannedProducts) =>
     scannedProducts
       .map((sp, idx) => {
-        return [
-          ...sp,
-          idx,
-          Math.floor((new Date(sp[2]) - new Date()) / (1000 * 60 * 60 * 24)),
-        ];
+        const date = new Date(sp[2]);
+        const daysToExpiry = isNaN(date.getTime())
+          ? Infinity
+          : Math.floor((date - new Date()) / (1000 * 60 * 60 * 24));
+        return [...sp, idx, daysToExpiry];
       })
       .sort((a, b) => a[4] - b[4]);
 

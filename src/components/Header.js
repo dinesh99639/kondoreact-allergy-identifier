@@ -20,6 +20,8 @@ import { getCookie, parseGroups } from '../utils/utils';
 import { updateGroup } from '../services/group';
 import NotificationContext from '../context/NotificationContext';
 import { Typography } from '@progress/kendo-react-common';
+import './Header.css';
+import { parseUserData } from '../utils/utils';
 
 const Header = (props) => {
   const anchor = useRef(null);
@@ -32,6 +34,7 @@ const Header = (props) => {
   const { showNotification } = useContext(NotificationContext);
   const navigate = useNavigate();
   const groups = parseGroups(userDetails?.custom.fields.groups);
+  const parsedUserData = parseUserData(userDetails);
 
   useEffect(() => {
     setPendingRequests(
@@ -40,6 +43,7 @@ const Header = (props) => {
           (pendingUser) => pendingUser.id === userDetails.id
         );
         if (hasRequestInCurrentGroup) {
+          pendingRequestsCount.current += 1;
           return [
             ...acc,
             { request: hasRequestInCurrentGroup, name: group.name },
@@ -55,15 +59,19 @@ const Header = (props) => {
   };
 
   const getExpiredProductsDetails = () => {
-    const expiredProducts = userDetails.custom.fields.scanned.filter(
-      (product) => {
-        const remaingDaysToExpire = Math.floor(
-          (new Date(product[2]) - new Date()) / (1000 * 60 * 60 * 24)
-        );
+    const groupScannedProducts = parsedUserData.groups
+      .map((group) => group.scanned)
+      .flat();
+    const expiredProducts = [
+      ...userDetails.custom.fields.scanned,
+      ...groupScannedProducts,
+    ].filter((product) => {
+      const remaingDaysToExpire = Math.floor(
+        (new Date(product[2]) - new Date()) / (1000 * 60 * 60 * 24)
+      );
 
-        if (remaingDaysToExpire <= 0) return product;
-      }
-    );
+      if (remaingDaysToExpire <= 0) return product;
+    });
     setExpiredProducts(expiredProducts);
   };
 
@@ -78,24 +86,44 @@ const Header = (props) => {
   const handleAcceptInvitation = async (request, groupName) => {
     groups.forEach(async (group) => {
       if (group.name === groupName) {
+        pendingRequestsCount.current -= 1;
         group.pending = group.pending.filter(
           (pendingUser) => pendingUser.id !== request.id
         );
         group.accepted.push(request);
         const response = await updateGroup(group);
         if (response.success) {
-          setUserDetails(response.data);
-          showNotification({
-            type: 'success',
-            message: `You have accepted the invitation to join ${groupName}`,
-          });
+          const access_token = getCookie('access_token');
+          const userDetails = await getUserDetails(access_token);
+          if (userDetails.success) {
+            setUserDetails(userDetails.data);
+            showNotification({
+              type: 'success',
+              message: `You have accepted the invitation to join ${groupName}`,
+            });
+          }
         }
       }
     });
   };
 
-  const handleRejectInvitation = () => {
-    updateGroup();
+  const handleRejectInvitation = (request, groupName) => {
+    groups.forEach(async (group) => {
+      if (group.name === groupName) {
+        pendingRequestsCount.current -= 1;
+        group.pending = group.pending.filter(
+          (pendingUser) => pendingUser.id !== request.id
+        );
+        const response = await updateGroup(group);
+        if (response.success) {
+          setUserDetails(response.data);
+          showNotification({
+            type: 'success',
+            message: `You have rejected the invitation to join ${groupName}`,
+          });
+        }
+      }
+    });
   };
 
   return (
@@ -116,7 +144,7 @@ const Header = (props) => {
         <AppBarSpacer />
         <AppBarSection style={{ cursor: 'pointer' }}>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Typography.h6 style={{ margin: "auto 0" }}>
+            <Typography.h6 style={{ margin: 'auto 0' }}>
               {userDetails.firstName + ' ' + userDetails.lastName}
             </Typography.h6>
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -145,56 +173,101 @@ const Header = (props) => {
               <Popup
                 anchor={anchor.current}
                 show={showNotificationPanel}
-                style={{ width: '250px', marginRight: '2rem' }}
+                style={{
+                  width: '300px',
+                  paddingRight: '1rem',
+                }}
               >
                 <div>
                   {expiredProducts.length > 0 && (
                     <div
-                      style={{
-                        padding: '0.5rem',
-                        cursor: 'pointer',
-                        borderBottom: ' 1px solid lightgray',
-                      }}
+                      className="card"
                       onClick={() => {
                         navigate('/products-expiry');
                       }}
                     >
-                      <span>{expiredProducts.length} items are expired</span>
+                      <div className="card-wrapper">
+                        <div className="card-content">
+                          <div className="card-title-wrapper">
+                            <span className="card-title">Expired Items</span>
+                          </div>
+                          <div className="product-name">
+                            {expiredProducts.length} items are expired
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                   {pendingRequests.length > 0 &&
-                    pendingRequests.map((pr) => (
-                      <div
-                        style={{
-                          padding: '0.5rem',
-                          borderBottom: ' 1px solid lightgray',
-                        }}
-                      >
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                          <div>
-                            You are requested to join <b>{pr.name}</b>
+                    pendingRequests.map((pr) => {
+                      console.log('pr', pr);
+                      return (
+                        <div className="card">
+                          <div className="card-wrapper">
+                            <div className="card-content">
+                              <div className="card-title-wrapper">
+                                <span className="card-title">
+                                  Group Invitation
+                                </span>
+                              </div>
+                              <div className="product-name">
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                  }}
+                                >
+                                  You are requested to join {pr.name}
+                                  <MdCheck
+                                    style={{
+                                      color: 'green',
+                                      fontSize: '1.5rem',
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={() =>
+                                      handleAcceptInvitation(
+                                        pr.request,
+                                        pr.name
+                                      )
+                                    }
+                                  />
+                                  <IoMdClose
+                                    style={{
+                                      color: 'red',
+                                      fontSize: '1.5rem',
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={() =>
+                                      handleRejectInvitation(
+                                        pr.request,
+                                        pr.name
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <MdCheck
-                            style={{
-                              color: 'green',
-                              fontSize: '1.5rem',
-                              cursor: 'pointer',
-                            }}
-                            onClick={() =>
-                              handleAcceptInvitation(pr.request, pr.name)
-                            }
-                          />
-                          <IoMdClose
-                            style={{
-                              color: 'red',
-                              fontSize: '1.5rem',
-                              cursor: 'pointer',
-                            }}
-                            onClick={() => handleRejectInvitation()}
-                          />
+                        </div>
+                      );
+                    })}
+                  {expiredProducts.length + pendingRequestsCount.current ===
+                    0 && (
+                    <div
+                      className="card"
+                      onClick={() => {
+                        navigate('/products-expiry');
+                      }}
+                    >
+                      <div className="card-wrapper">
+                        <div className="card-content">
+                          <div className="card-title-wrapper">
+                            <span className="card-title">No Notifications</span>
+                          </div>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  )}
                 </div>
               </Popup>
             </div>
