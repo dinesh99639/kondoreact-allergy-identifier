@@ -29,15 +29,17 @@ export const NotificationProvider = ({ children }) => {
       }}
     >
       {children}
-      <NotificationGroup style={{ right: 10, bottom: 10,zIndex:'100003' }}>
+      <NotificationGroup style={{ right: 10, bottom: 10, zIndex: '100003' }}>
         <Fade>
           {notification.isOpen && (
             <Notification
               type={{ style: notification.type, icon: true }}
               closable={true}
-              onClose={prev => {setNotification({...prev, isOpen: false})}}
+              onClose={(prev) => {
+                setNotification({ ...prev, isOpen: false });
+              }}
             >
-              <span>{notification.message}</span>
+              <span style={{ fontSize: "16px" }}>{notification.message}</span>
             </Notification>
           )}
         </Fade>
