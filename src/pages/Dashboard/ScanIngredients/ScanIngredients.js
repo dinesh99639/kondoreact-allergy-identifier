@@ -146,12 +146,7 @@ const ScanIngredients = () => {
     setExpansionPanels(expansionPanels);
   };
 
-  useEffect(() => {
-    setImage({ data: location?.state?.image, type: location?.state?.type });
-    window.history.replaceState({}, '');
-  }, [location?.state]);
-
-  useEffect(() => {
+  const reset = () => {
     const userDetails = parseUserData(userContext?.userDetails);
 
     const self = {
@@ -180,7 +175,29 @@ const ScanIngredients = () => {
     setNames({
       [userDetails.id]: `${userDetails.firstName} ${userDetails.lastName}`,
     });
-  }, []);
+  };
+
+  useEffect(() => {
+    setImage({ data: location?.state?.image, type: location?.state?.type });
+    window.history.replaceState({}, '');
+
+    setProductName('');
+    setExpiryDate('');
+    setIsSaveInProgress(null);
+
+    setSelectedGroup({});
+    setExpansionPanels([]);
+    setIdentification({
+      isLoading: false,
+      data: null,
+    });
+    
+    reset();
+  }, [location?.state]);
+
+  useEffect(() => {
+    reset();
+  }, [userContext.userDetails]);
 
   return (
     <div className="scanIngredients">
