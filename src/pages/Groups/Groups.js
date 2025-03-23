@@ -76,7 +76,6 @@ const Groups = () => {
           visible={visible}
           setVisible={setVisible}
           title={title}
-          groups={parsedUserDetails}
           selectedId={selectedId}
           selectedGroup={selectedGroup}
         />

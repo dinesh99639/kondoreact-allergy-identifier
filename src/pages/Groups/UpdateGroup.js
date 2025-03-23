@@ -19,9 +19,9 @@ const UpdateGroup = ({
   title,
   selectedId,
   selectedGroup,
-  groups,
 }) => {
   const { userDetails, setUserDetails } = useContext(UserContext);
+  const [user, setUser] = useState({});
 
   const [data, setData] = useState([]);
   const [groupname, setGroupName] = useState();
@@ -33,9 +33,15 @@ const UpdateGroup = ({
   const { email: currentUserMail, id: currentUserId } = userDetails;
 
   useEffect(() => {
+    setUser(parseUserData(userDetails));
+  }, [userDetails]);
+
+  useEffect(() => {
+    const user = parseUserData(userDetails);
+
     const tempData = [];
     if (selectedId) {
-      groups.groups.forEach((group) => {
+      user.groups.forEach((group) => {
         if (group.id === selectedId) {
           group?.accepted.forEach((el) => {
             tempData.push({ class: 'base', name: el.email, obj: el });
@@ -107,7 +113,7 @@ const UpdateGroup = ({
     }
     if (selectedId) {
       let flag;
-      groups.groups.forEach((group) => {
+      user.groups.forEach((group) => {
         if (group.id === selectedId) {
           flag = group.pending.find((el) => el.email === inputValue);
         }
@@ -185,7 +191,7 @@ const UpdateGroup = ({
       );
 
       let tempGrp = [];
-      groups.groups.forEach((group) => {
+      user.groups.forEach((group) => {
         if (group.id === selectedId) {
           tempGrp = group.accepted.filter(
             (member) => !deletedData.includes(member.email)
