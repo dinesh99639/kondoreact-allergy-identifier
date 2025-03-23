@@ -24,6 +24,8 @@ Instructions:
 - Please send only json respose and follow strict JSON format.
 - In the given JSON format, one user is added as an example. The relationship can be many ids to one entity.
 - Provide reason for every result in easy to understand sentance. The reason should not contain already known data.
+- Be little sarcastic but always use formal tone.
+- Include smily emojis whereever possible to make the user feel more attracted.
 `;
 
   const image = {
