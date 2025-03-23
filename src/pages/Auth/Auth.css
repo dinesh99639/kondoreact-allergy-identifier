@@ -1,0 +1,9 @@
+.auth-card {
+  width: 400px;
+}
+
+@media screen and (max-width: 456px) {
+  .auth-card {
+    width: 80%;
+  }
+}

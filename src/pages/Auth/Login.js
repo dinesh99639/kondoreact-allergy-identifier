@@ -1,17 +1,22 @@
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+
+import { getUserDetails, login } from '../../services/auth';
+import NotificationContext from '../../context/NotificationContext';
+import UserContext from '../../context/UserContext';
+
 import { TextBox } from '@progress/kendo-react-inputs';
 import { Button } from '@progress/kendo-react-buttons';
-import React, { useContext, useState } from 'react';
 import { Card } from '@progress/kendo-react-layout';
-import { Link, useNavigate } from 'react-router';
+import { Error } from '@progress/kendo-react-labels';
+
 import { MdEmail } from 'react-icons/md';
 import { MdOutlinePassword } from 'react-icons/md';
 import { BiSolidHide } from 'react-icons/bi';
 import { BiSolidShow } from 'react-icons/bi';
 import { CgSpinner } from 'react-icons/cg';
-import { Error } from '@progress/kendo-react-labels';
-import { getUserDetails, login } from '../../services/auth';
-import NotificationContext from '../../context/NotificationContext';
-import UserContext from '../../context/UserContext';
+
+import './Auth.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -52,12 +57,12 @@ const Login = () => {
     >
       <Card
         style={{
-          width: 400,
           padding: '2rem',
           display: 'flex',
           boxShadow:
             'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px',
         }}
+        className="auth-card"
       >
         <h2 style={{ textAlign: 'center', margin: '1rem' }}>
           Sign in with email
@@ -116,10 +121,9 @@ const Login = () => {
                 setPasswordError('');
               }
               setPassword(e.target.value);
-
             }}
             onKeyUp={(e) => {
-              if (e.key === "Enter" && !!email) {
+              if (e.key === 'Enter' && !!email) {
                 handleLogin();
               }
             }}
