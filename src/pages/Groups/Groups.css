@@ -24,6 +24,13 @@
   width: 20rem;
 }
 
+.group-row .group-action {
+  color: var(--kendo-color-primary);
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+}
+
 @media screen and (max-width: 456px) {
   .group-row {
     width: 60vw;

@@ -23,22 +23,18 @@ const Group = ({ group, handleUpdateGroup, handleDeleteGroup }) => {
         className="group-row"
         onClick={handleToggleAccordion}
       >
-        <div>{group.name}</div>
+        <div style={{ color: 'var(--kendo-color-primary)' }}>{group.name}</div>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <MdDeleteForever
-            style={{ color: '#4D55CC', cursor: 'pointer' }}
+            className="group-action"
             onClick={() => handleDeleteGroup(group)}
           />
           <MdEdit
-            style={{ color: '#4D55CC', cursor: 'pointer' }}
+            className="group-action"
             onClick={() => handleUpdateGroup(group.id, group.name)}
           />
-          {!isOpen && (
-            <FaChevronDown style={{ color: '#4D55CC', cursor: 'pointer' }} />
-          )}
-          {isOpen && (
-            <FaChevronUp style={{ color: '#4D55CC', cursor: 'pointer' }} />
-          )}
+          {!isOpen && <FaChevronDown className="group-action" />}
+          {isOpen && <FaChevronUp className="group-action" />}
         </div>
       </div>
 
