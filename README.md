@@ -10,6 +10,7 @@ The application is hosted on Vercel:
 
 Allergy Identifier is a React-based application designed to help users identify potential allergens in products by scanning images and comparing them against known allergens and ailments. The application leverages KendoReact components, React Router, and Google Generative AI for a seamless user experience.
 
+
 ## Features
 
 - **User Authentication:** Secure login and registration.
